@@ -1,5 +1,9 @@
-In this modified code, Iv'e created a LightClient struct that holds the Header of the light client. The NewLightClient function is used to create a new instance of the light client with the specified header.
+In this code, the LightClient struct now includes an additional field Headers, which is a slice of all the headers received by the light client. The Mutex is used to synchronize access to the Headers slice.
 
-The VerifyStateInclusionProof method of the LightClient struct takes a leaf and a proof as inputs and verifies the inclusion proof against the Merkle tree built from the proof and the root stored in the header. It returns true if the proof is valid, and false otherwise.
+The AddHeader method allows adding a new header to the Headers slice, and it updates the Header field of the light client to the most recent header.
 
-In the main function, we create a Header and a LightClient instance. We then use the VerifyStateInclusionProof method to verify the state inclusion proof for a given leaf and proof.
+The ValidateHeaderChain method has been updated to perform header chain validation. It checks the parent hash and state vector commitment of each header in the Headers slice. Additional validation checks can be added as required.
+
+The hashHeader function computes the hash of a header by concatenating its fields.
+
+The main function demonstrates the usage of the light client by adding headers and validating the header chain.
