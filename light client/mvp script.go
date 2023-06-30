@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"fmt"
+	"sync"
 )
 
 type MerkleTree struct {
@@ -17,7 +18,9 @@ type Header struct {
 }
 
 type LightClient struct {
-	Header *Header
+	Header  *Header
+	Headers []*Header
+	Mutex   sync.RWMutex
 }
 
 func NewMerkleTree(leaves []string) *MerkleTree {
@@ -51,16 +54,70 @@ func hashNodes(left, right string) string {
 	return fmt.Sprintf("%x", hash)
 }
 
-func NewLightClient(header *Header) *LightClient {
+func NewLightClient() *LightClient {
 	return &LightClient{
-		Header: header,
+		Header:  nil,
+		Headers: []*Header{},
+		Mutex:   sync.RWMutex{},
 	}
 }
 
-func (client *LightClient) VerifyStateInclusionProof(leaf string, proof []string) bool {
-	tree := NewMerkleTree(proof)
-	root := tree.GetRoot()
-	return tree.VerifyInclusionProof(leaf, proof, root)
+func (client *LightClient) AddHeader(header *Header) {
+	client.Mutex.Lock()
+	defer client.Mutex.Unlock()
+
+	client.Headers = append(client.Headers, header)
+	client.Header = header
+}
+
+func (client *LightClient) ValidateHeaderChain() bool {
+	client.Mutex.RLock()
+	defer client.Mutex.RUnlock()
+
+	if len(client.Headers) == 0 {
+		return true
+	}
+
+	for i := 1; i < len(client.Headers); i++ {
+		prevHeader := client.Headers[i-1]
+		currentHeader := client.Headers[i]
+
+		// Validate parent hash
+		if hashHeader(prevHeader) != currentHeader.ParentHash {
+			return false
+		}
+
+		// Validate state vector commitment
+		if !client.VerifyStateVectorCommitment(currentHeader) {
+			return false
+		}
+
+		// Additional validation checks for state root, etc.
+	}
+
+	return true
+}
+
+func hashHeader(header *Header) string {
+	hashInput := header.ParentHash + header.StateRoot + concatStrings(header.StateVectorCommitment)
+	hash := sha256.Sum256([]byte(hashInput))
+	return fmt.Sprintf("%x", hash)
+}
+
+func (client *LightClient) VerifyStateVectorCommitment(header *Header) bool {
+	stateVectorCommitment := header.StateVectorCommitment
+	stateRoot := header.StateRoot
+	merkleTree := NewMerkleTree(stateVectorCommitment)
+	root := merkleTree.GetRoot()
+	return root == stateRoot
+}
+
+func concatStrings(strs []string) string {
+	result := ""
+	for _, str := range strs {
+		result += str
+	}
+	return result
 }
 
 func (tree *MerkleTree) GetRoot() string {
@@ -70,30 +127,30 @@ func (tree *MerkleTree) GetRoot() string {
 	return ""
 }
 
-func (tree *MerkleTree) VerifyInclusionProof(leaf string, proof []string, root string) bool {
-	computedRoot := leaf
-	for _, proofElement := range proof {
-		computedRoot = hashNodes(computedRoot, proofElement)
-	}
-	return computedRoot == root
-}
-
 func main() {
-	header := &Header{
+	client := NewLightClient()
+
+	// Simulated header synchronization
+	header1 := &Header{
 		ParentHash:            "parent_hash_1",
 		StateRoot:             "state_root_1",
 		StateVectorCommitment: []string{"leaf_1", "leaf_2", "leaf_3"},
 	}
 
-	client := NewLightClient(header)
+	header2 := &Header{
+		ParentHash:            "parent_hash_2",
+		StateRoot:             "state_root_2",
+		StateVectorCommitment: []string{"leaf_4", "leaf_5", "leaf_6"},
+	}
 
-	// Verify state inclusion proof
-	leaf := "leaf_1"
-	proof := []string{"leaf_1", "leaf_2", "leaf_3"}
-	isValid := client.VerifyStateInclusionProof(leaf, proof)
+	client.AddHeader(header1)
+	client.AddHeader(header2)
+
+	// Validate the header chain
+	isValid := client.ValidateHeaderChain()
 	if isValid {
-		fmt.Println("State inclusion proof is valid!")
+		fmt.Println("Header chain is valid!")
 	} else {
-		fmt.Println("State inclusion proof is not valid.")
+		fmt.Println("Header chain is not valid.")
 	}
 }
