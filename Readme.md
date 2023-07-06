@@ -7,7 +7,7 @@ Enhancing Stateless Account Abstraction in Ethereum: Introducing Xtreamly, the r
 without altering the consensus-layer protocol.
 
 Stateless AA, seperates state from validation and execution logic. In such a scenario, users may not need to provide explicit
-state information to participate in the mempool. Instead, their transactions could be verified based on other criteria, 
+state information to participate in an alternative  mempool. Instead, their transactions could be verified based on other criteria, 
 such as cryptographic proofs and witness. To handle the state for transactions in the mempool without relying on explicit 
 state information, a lightweight proxy smart contract can be integrated with an ASVC (aggregatable subvector commitment) 
 scheme for more efficient, succinct and  cheaper.. 
