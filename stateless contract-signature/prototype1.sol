@@ -37,7 +37,7 @@ contract SignatureApproval {
     // Function to perform some action that requires signature approval
     function performAction(bytes32 _message, uint8 _v, bytes32 _r, bytes32 _s) external {
         require(isValidSignature(_message, _v, _r, _s), "Invalid signature.");
-        // Add the logic here that you want to perform when the signature is valid.
-        // For example, you can update state variables or execute some business logic.
+        // Adding the logic here  to perform when the signature is valid.
+        // One can update state variables or execute some logic.
     }
 }
