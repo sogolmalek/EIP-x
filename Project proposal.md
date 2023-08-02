@@ -10,6 +10,7 @@ read/write costs, business logic overhead, and log payments not required in EOAs
 Ethereum's efficiency and long-term viability. Additionally, the light clients, which do not store the entire state but rely on simplified verification mechanisms, struggle to efficiently access and 
 validate the state data against the mainnet. The lack of a concise and constant-sized proof of the current state limits light clients'
 ability to interact with the blockchain seamlessly.
+Therefore we Propose a stateless Account abstraction model which doesn't force any change in the current Ethereum core but can solve the above problems at the account level.
 
 
 ## Project description
