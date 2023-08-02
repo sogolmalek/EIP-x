@@ -19,43 +19,43 @@ correctness of individual blocks without needing a full state. Instead, clients 
 
 To sustain scalability, we propose Stateless Account Abstraction with Two new entities: 
 ## 1- State provider: 
-this entity consist of Ethereum light clients  providing the latest  state, peer to peer network and  ZK circuit. 
+this entity consists of Ethereum light clients  providing the latest  state, peer to peer network and  ZK circuit. 
 We introduce a decentralized peer-to-peer network with a state provider entity, collaborating to validate and generate ZK-SNARKs proofs 
 for state information. A lightweight client verifies proofs and validates state data from the state provider.
-## 2- ZK-SNARKs for State Proof:
+A- ZK-SNARKs for State Proof:
 To provide a trustless and efficient proof of state, we employ ZK-SNARKs, a cryptographic primitive that allows a prover to generate 
 a succinct proof of the validity of a statement without revealing any sensitive information. By using ZK-SNARKs, the state provider can
 generate proofs of state integrity that can be verified by any participant in the peer-to-peer network, ensuring the trustworthiness of 
 the provided state.
 
-## 1-Peer-to-Peer Network:
+B- Peer-to-Peer Network:
 The proposed solution requires a decentralized peer-to-peer network to distribute the state provider functionality. Peers in the network 
-collaborate to validate and generate ZK-SNARKs proofs for the requested state information. This distributed approach ensures fault tolerance,
-and resilience, and enhances the scalability of the state provider.
-Proof Generation and Validation:
+collaborate to validate and generate ZK-SNARKs proofs for the requested state information. This distributed approach ensures fault tolerance,and resilience, and enhances the scalability of the state provider.
+
+C-Proof Generation and Validation:
 When a stateless transaction enters the alternative mempool, it includes a reference to the required state information. The state provider 
 peers collaborate to generate a ZK-SNARKs proof that verifies the validity and integrity of the specified state against the Mainnet. 
 This proof is then shared with the requesting node, allowing it to verify the state without relying on direct interaction with the
 Ethereum Mainnet.
 
 ## 2-hybrid witness sharing.
-we implement  Hybrid Witness Sharing (HWS), a novel approach that separates witness information from transaction data, optimizing gas usage, 
-improving efficiency, and enhancing overall network scalability. This advancement is particularly beneficial for complex smart contracts and 
-data-intensive applications, empowering Ethereum to handle a higher transaction volume without compromising security or incurring exorbitant 
-costs.
-Transaction Data Inclusion: Each transaction will continue to include the essential data, such as inputs, outputs, and parameters, required 
-for seamless execution and state changes on the blockchain.
-Witness Information Sharing: In contrast to the current approach, HWS advocates for the separation of witness information from the 
+we implement  Hybrid Witness Sharing (HWS), a novel approach that separates witness information from transaction data, optimizing gas usage, improving efficiency, and enhancing overall network scalability. This advancement is particularly beneficial for complex smart contracts and  data-intensive applications, empowering Ethereum to handle a higher transaction volume without compromising security or incurring exorbitant costs.
+A-Transaction Data Inclusion: Each transaction will continue to include the essential data, such as inputs, outputs, and parameters, required for seamless execution and state changes on the blockchain.
+
+B-Witness Information Sharing: In contrast to the current approach, HWS advocates for the separation of witness information from the 
 transaction data. Rather than including the full witness in each transaction, it will be shared among multiple transactions. 
 This sharing mechanism can be implemented using Merkle trees, zk-SNARKs, or other cryptographic techniques, ensuring the validity 
 and integrity of witness data while minimizing redundancy.
-Efficiency and Scalability: HWS and SAA contribute to improving the efficiency and scalability of the blockchain network. 
+
+C-Efficiency and Scalability: HWS and SAA contribute to improving the efficiency and scalability of the blockchain network. 
 HWS reduces gas consumption, leading to faster block processing times, while SAA reduces the storage requirements for individual nodes.
 Together, they enable the network to handle a higher transaction volume and improve the overall responsiveness of the blockchain.
-Smart Contract Complexity: The combination of HWS and SAA encourages the development of complex smart contracts and data-intensive 
+
+D-Smart Contract Complexity: The combination of HWS and SAA encourages the development of complex smart contracts and data-intensive 
 applications. With reduced gas costs and storage requirements, developers are incentivized to create more sophisticated and
 feature-rich smart contracts, enhancing the utility and diversity of the Ethereum ecosystem.
-State Separation: While SAA focuses on separating the state from the execution, HWS complements this approach by separating 
+
+E-State Separation: While SAA focuses on separating the state from the execution, HWS complements this approach by separating 
 witness information from transaction data. The witness information can be considered part of the state that is shared among transactions. 
 By separating both the state and the witness, the blockchain network can achieve a higher level of optimization and maintain 
 a more scalable architecture.
