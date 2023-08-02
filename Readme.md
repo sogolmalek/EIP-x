@@ -19,9 +19,10 @@ correctness of individual blocks without needing a full state. Instead, clients 
 
 To sustain scalability, we propose Stateless Account Abstraction with Two new entities: 
 ## 1- State provider: 
-this entity consists of Ethereum light clients  providing the latest  state, peer to peer network and  ZK circuit. 
+this entity consists of Ethereum light clients  providing the latest  state, peer-to-peer network and  ZK circuit. 
 We introduce a decentralized peer-to-peer network with a state provider entity, collaborating to validate and generate ZK-SNARKs proofs 
 for state information. A lightweight client verifies proofs and validates state data from the state provider.
+
 A- ZK-SNARKs for State Proof:
 To provide a trustless and efficient proof of state, we employ ZK-SNARKs, a cryptographic primitive that allows a prover to generate 
 a succinct proof of the validity of a statement without revealing any sensitive information. By using ZK-SNARKs, the state provider can
