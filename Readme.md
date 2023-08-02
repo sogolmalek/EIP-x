@@ -3,13 +3,7 @@ Stateless Account abstraction that scales Ethereum.
 
 ## Motivation
 
-Ethereum's state grows rapidly, burdening consensus nodes with 35 GB state and 100 GB with proofs, increasing every six months. 
-The increasing state size hampers scalability, imposing storage and processing burdens on nodes. Participants pay one-time costs perpetually,
-raising economic concerns. Additionally, ERC-4337 wallets incur elevated gas costs (~42000 gas for basic operations) due to multiple storage
-read/write costs, business logic overhead, and log payments not required in EOAs. A stateless based solution is essential to maintain 
-Ethereum's efficiency and long-term viability. Additionally, the light clients, which do not store the entire state but rely on simplified verification mechanisms, struggle to efficiently access and 
-validate the state data against the mainnet. The lack of a concise and constant-sized proof of the current state limits light clients'
-ability to interact with the blockchain seamlessly.
+Ethereum's state grows rapidly, burdening consensus nodes with 35 GB state and 100 GB with proofs, increasing every six months. The increasing state size hampers scalability, imposing storage and processing burdens on nodes. Participants pay one-time costs perpetually, raising economic concerns. Additionally, ERC-4337 wallets incur elevated gas costs (~42000 gas for basic operations) due to multiple storage read/write costs, business logic overhead, and log payments not required in EOAs. A stateless based solution is essential to maintain Ethereum's efficiency and long-term viability. Additionally, the light clients, which do not store the entire state but rely on simplified verification mechanisms, struggle to efficiently access and validate the state data against the mainnet. The lack of a concise and constant-sized proof of the current state limits light clients' ability to interact with the blockchain seamlessly. Therefore we Propose a stateless Account abstraction model which doesn't force any change in the current Ethereum core but can solve the above problems at the account level.
 
 
 ## Project description
