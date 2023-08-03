@@ -118,14 +118,6 @@ to the ERC-4337 flow to better support stateless account abstraction. Collaborat
 By following this roadmap, the development team can create a functional MVP showcasing the benefits of the hybrid witness sharing and stateless account abstraction proposal without the dependency on Verkle trees or protocol-level changes. The MVP can serve as a powerful demonstration of the proposed solution's potential and open up new possibilities for the Ethereum community.
 
 
-## Possible challenges
-
-Users need to ensure that the necessary data (e.g., account balance, contract code) is available and properly validated during transaction 
-processing. This may require additional protocols or mechanisms to efficiently generate and validate these proofs.
-Smart Contract Interactions: With stateless account abstraction, smart contract interactions may require additional considerations.
-For instance, when a contract interacts with other contracts, it needs to obtain and validate the required state information 
-during execution.
-
 ## Goal of the project
 
 Success for the Hybrid Witness Sharing and Stateless Account Abstraction project would be achieved when the proposed solution is 
