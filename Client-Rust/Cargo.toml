@@ -1,0 +1,33 @@
+[package]
+name = "ethereum_client"
+version = "0.1.0"
+authors = ["sogol Malek"]
+edition = "2023"
+
+[dependencies]
+ethers = "0.6.1"
+tokio = { version = "1", features = ["full"] }
+helios = "0.7.1"
+env_logger = "0.11.3"
+
+[dependencies.common]
+path = "../common"
+
+[dependencies.consensus]
+path = "../consensus"
+
+[dependencies.execution]
+path = "../execution"
+
+[dependencies.config]
+path = "../config"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+jsonrpsee = { version = "0.15.1", features = ["full"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+gloo-timers = "0.2.6"
+wasm-bindgen-futures = "0.4.33"
+
+[features]
+default = ["std"]
