@@ -3,6 +3,12 @@ use ethers::types::{Address, U256};
 use eyre::Result;
 use helios::db::Database;
 use helios::rpc::Rpc;
+// main.rs
+
+mod mod light_client_protocol;
+ // Include the custom protocol from the separate file
+
+use light_client_protocol::LightClientMessage; // Import the LightClientMessage enum for use in the LightClient
 
 #[tokio::main]
 async fn main() -> Result<()> {
