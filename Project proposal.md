@@ -39,27 +39,16 @@ peers collaborate to generate a ZK-SNARKs proof that verifies the validity and i
 This proof is then shared with the requesting node, allowing it to verify the state without relying on direct interaction with the
 Ethereum Mainnet.
 
-## 2-hybrid witness sharing.
-we implement  Hybrid Witness Sharing (HWS), a novel approach that separates witness information from transaction data, optimizing gas usage, improving efficiency, and enhancing overall network scalability. This advancement is particularly beneficial for complex smart contracts and  data-intensive applications, empowering Ethereum to handle a higher transaction volume without compromising security or incurring exorbitant costs.
-A-Transaction Data Inclusion: Each transaction will continue to include the essential data, such as inputs, outputs, and parameters, required for seamless execution and state changes on the blockchain.
+## 2- Efficient Witness Verification through Specialized Contracts and Caching
 
-B-Witness Information Sharing: In contrast to the current approach, HWS advocates for the separation of witness information from the 
-transaction data. Rather than including the full witness in each transaction, it will be shared among multiple transactions. 
-This sharing mechanism can be implemented using Merkle trees, zk-SNARKs, or other cryptographic techniques, ensuring the validity 
-and integrity of witness data while minimizing redundancy.
 
-C-Efficiency and Scalability: HWS and SAA contribute to improving the efficiency and scalability of the blockchain network. 
-HWS reduces gas consumption, leading to faster block processing times, while SAA reduces the storage requirements for individual nodes.
-Together, they enable the network to handle a higher transaction volume and improve the overall responsiveness of the blockchain.
+This entity is dedicated to verifying each block in Ethereum's sharded system, leveraging zero-knowledge (zk) proofs for state verification. A novel approach, based on EIP-210, involves using a specialized contract to store block hashes directly in the state. This offers advantages such as eliminating the need for special encoding in the witness and enabling the inclusion of older block hashes beyond the past 256 blocks, enhancing system flexibility and historical context.
 
-D-Smart Contract Complexity: The combination of HWS and SAA encourages the development of complex smart contracts and data-intensive 
-applications. With reduced gas costs and storage requirements, developers are incentivized to create more sophisticated and
-feature-rich smart contracts, enhancing the utility and diversity of the Ethereum ecosystem.
+To optimize witness retrieval and reduce redundancy, a caching mechanism is proposed within the Light Client. This mechanism stores previously accessed witnesses, minimizing redundant witness requests, especially for transactions frequently accessing the same shard.
 
-E-State Separation: While SAA focuses on separating the state from the execution, HWS complements this approach by separating 
-witness information from transaction data. The witness information can be considered part of the state that is shared among transactions. 
-By separating both the state and the witness, the blockchain network can achieve a higher level of optimization and maintain 
-a more scalable architecture.
+The specialized contract is designed with well-defined functionalities, data structures, and access controls. It efficiently stores and retrieves block hashes, ensuring access by stateless light clients and other components for cross-shard interactions. Events are emitted to notify stateless light clients of new block hashes, maintaining up-to-date records. Gas efficiency, concurrent access handling, and security considerations are also taken into account in the contract's design.
+
+By implementing this approach, light clients can efficiently verify stateless blocks, and the sharded system gains improved witness efficiency and gas optimization. The specialized contract serves as a reliable registry, mapping block numbers to corresponding block hashes, and simplifies witness management and distribution. Overall, this proposal aims to enhance Ethereum's scalability and efficiency in a sharded environment.
 
 ## Roadmap
 
