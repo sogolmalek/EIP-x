@@ -10,4 +10,3 @@ pub enum LightClientMessage {
     // Add more message types as needed
 }
 
-// Implement any necessary helper functions or data structures: ...
