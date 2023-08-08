@@ -9,5 +9,4 @@ struct LightClient {
     peer_id: PeerId,
     listen_addr: Multiaddr,
     discovery: Box<dyn libp2p::swarm::SwarmBehaviour>,
-    // Add other fields as needed
 }
