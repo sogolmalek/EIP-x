@@ -89,3 +89,4 @@ Sina Mahmoodi
 
 ## Resources
 https://github.com/sogolmalek/EIP-x
+https://docs.google.com/presentation/d/1heCbSH1Mj1oG0aPamk0yQ5Mo9sLJfAmt71lzBe-0-C4/edit?usp=sharing
