@@ -1,16 +1,22 @@
-//in this implementation, we use an in-memory database (InMemoryDatabase) provided by Helios to store and retrieve partial view data
-//(balance of Ethereum addresses). The cache is used to improve performance and avoid redundant queries to the Helios RPC.
-//The balance is fetched from the Helios client, inserted into the cache, and then stored in the in-memory database for future use.
-//When querying the balance, the code first checks the cache and then the database to provide the most up-to-date balance.
-
-
-use ethers::providers::{Alchemy, Middleware, Provider};
-use ethers::types::{Address, U256};
+use ethers::providers::{Alchemy, Provider};
+use ethers::types::Address;
 use eyre::Result;
 use helios::db::{Database, InMemoryDatabase};
 use helios::rpc::Rpc;
 use std::collections::HashMap;
-use std::time::Duration;
+use bls12_381::{PublicKey, Signature, G1Affine, Fq12, Fq6, G2Affine, G2Projective};
+use std::convert::TryFrom;
+use std::str::FromStr;
+
+// Define a function to verify BLS signature
+fn verify_signature(
+    public_key: &PublicKey<G2Affine>,
+    message: &[u8],
+    signature: &Signature<G1Affine>,
+) -> bool {
+    // Verify the BLS signature
+    public_key.verify::<Fq6, Fq12>(&message, signature)
+}
 
 // Define a cache struct to hold the cached data
 struct Cache {
@@ -37,10 +43,6 @@ impl Cache {
 async fn main() -> Result<()> {
     // Replace with your Helios RPC URL
     let helios_rpc_url = "https://goerli-light.eth.linkpool.io";
-
-    // Initialize the Ethereum provider with Alchemy
-    let alchemy = Alchemy::new(helios_rpc_url).expect("Failed to initialize Alchemy provider");
-    let provider = Provider::<Alchemy>::new(alchemy);
 
     // Initialize Helios client
     let helios_rpc = Rpc::new(helios_rpc_url).expect("Failed to initialize Helios RPC");
@@ -103,3 +105,4 @@ fn get_balance<D: Database>(database: &D, address: Address) -> f64 {
     // If not in cache, return 0.0 as default
     0.0
 }
+
