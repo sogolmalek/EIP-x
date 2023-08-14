@@ -6,7 +6,6 @@ use helios::rpc::Rpc;
 use std::collections::HashMap;
 use bls12_381::{PublicKey, Signature, G1Affine, Fq12, Fq6, G2Affine, G2Projective};
 use std::convert::TryFrom;
-use std::str::FromStr;
 
 // Define a function to verify BLS signature
 fn verify_signature(
@@ -43,6 +42,10 @@ impl Cache {
 async fn main() -> Result<()> {
     // Replace with your Helios RPC URL
     let helios_rpc_url = "https://goerli-light.eth.linkpool.io";
+
+    // Initialize the Ethereum provider with Alchemy
+    let alchemy = Alchemy::new(helios_rpc_url).expect("Failed to initialize Alchemy provider");
+    let provider = Provider::<Alchemy>::new(alchemy);
 
     // Initialize Helios client
     let helios_rpc = Rpc::new(helios_rpc_url).expect("Failed to initialize Helios RPC");
@@ -105,4 +108,3 @@ fn get_balance<D: Database>(database: &D, address: Address) -> f64 {
     // If not in cache, return 0.0 as default
     0.0
 }
-
