@@ -78,7 +78,9 @@ of changes within the core.
 ## Collaborators
 TBA
 ### Fellows 
-TBA
+Luke Schoen (EPF)
+Elias (Golden)
+Michael Elliot (ZK)
 
 ### Mentors
 
