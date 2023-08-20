@@ -7,17 +7,6 @@ use std::collections::HashMap;
 use bls12_381::{PublicKey, Signature, G1Affine, Fq12, Fq6, G2Affine, G2Projective};
 use std::convert::TryFrom;
 
-// Define a function to verify BLS signature
-fn verify_signature(
-    public_key: &PublicKey<G2Affine>,
-    message: &[u8],
-    signature: &Signature<G1Affine>,
-) -> bool {
-    // Verify the BLS signature
-    public_key.verify::<Fq6, Fq12>(&message, signature)
-}
-
-// Define a cache struct to hold the cached data
 struct Cache {
     cache: HashMap<Address, f64>,
 }
@@ -96,6 +85,20 @@ async fn query_balance<D: Database>(
     // Store the balance in the partial view data (in-memory database)
     database.save_checkpoint(address.to_string(), balance.to_string())?;
 
+    // need to add and Verify other necessary fields and conditions based on the stateless light client's requirements
+    // call the BLS signature verification function here
+    let public_key = PublicKey::try_from(G2Projective::prime_subgroup_generator())?;
+    let message = b"your-message";
+    let signature = Signature::from_affine(
+        G1Affine::prime_subgroup_generator() * bls12_381::Fr::from(42u64),
+    );
+    let is_valid = verify_signature(&public_key, &message, &signature);
+    if is_valid {
+        println!("BLS signature is valid!");
+    } else {
+        println!("BLS signature is invalid!");
+    }
+
     Ok(())
 }
 
@@ -107,4 +110,14 @@ fn get_balance<D: Database>(database: &D, address: Address) -> f64 {
 
     // If not in cache, return 0.0 as default
     0.0
+}
+
+// Define a function to verify BLS signature
+fn verify_signature(
+    public_key: &PublicKey<G2Affine>,
+    message: &[u8],
+    signature: &Signature<G1Affine>,
+) -> bool {
+    // Verify the BLS signature
+    public_key.verify::<Fq6, Fq12>(&message, signature)
 }
