@@ -81,8 +81,6 @@ Luke Schoen
 Elvis Sabanovic
 ### Fellows 
 Luke Schoen (EPF)
-Elias (Golden)
-Michael Elliot (ZK)
 
 ### Mentors
 
