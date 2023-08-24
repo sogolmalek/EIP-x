@@ -76,7 +76,9 @@ of changes within the core.
 
 
 ## Collaborators
-TBA
+Sogol Malek
+Luke Schoen
+Elvis Sabanovic
 ### Fellows 
 Luke Schoen (EPF)
 Elias (Golden)
