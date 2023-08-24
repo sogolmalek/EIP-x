@@ -1,0 +1,9 @@
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+
+# Axiom ZK library
+[dependencies]
+
+# Axiom ZK library from a Git repository (replace with the actual Git URL)
+axiom-zk = { git = "https://github.com/axiom-crypto/axiom-v1-contracts.git", branch = "main" }
+
