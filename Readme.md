@@ -1,14 +1,15 @@
-Motivation:
+## Motivation:
 
 TL;DR: Light clients struggle to efficiently access and validate data on the mainnet due to challenges in obtaining concise witness proofs. Verkle trees help lightweight clients transition between blocks but can't prove new state accuracy. Stateless clients lack state data for actions beyond transitioning. The Portal Network doesn't fully address these issues. Our solution adds a stateless verifier LC on the Portal Network with a cache to store important state fragments. We distribute the latest state using zero-knowledge proofs and propose a chase mechanism for efficient data retrieval. This addresses challenges in accessing state data for tasks like gas estimation and enhances lightweight client efficiency.
-Project Description:
+
+## Project Description:
 
 Light clients struggle to efficiently access and validate data. Currently, light clients, which rely on simplified verification, face challenges in accessing and validating the mainnet state due to the absence of concise witness proofs. These clients need to confirm blocks without having access to the full state.
 Verkle trees allow very lightweight clients to consume proofs from other networks to transition from the last block to the new block. However, they cannot prove the accuracy of the new state root. If a stateless client discards all its stored information, it can still confirm the accuracy of new state roots. By doing so, a stateless client can still send transactions but cannot calculate gas estimates, perform ETH calls, or read Ethereum's state since it no longer maintains any state data. The client is limited to actions that involve transitioning from one state to the next state root, without any specific state-related functions.
 This is where the Portal Network comes into play. While it allows the reading of random state data, it doesn't fully mitigate the core issue. The underlying challenge persists—efficiently accessing state data remains crucial for various tasks, including gas estimation. Additionally, Verkle trees, despite their benefits, don't inherently solve problems like federated access to the state.
 To bridge this gap, an innovative solution comes in the form of the Portal Network introducing a stateless verifier LC (Lightweight Client) with a partial state caching mechanism to enhance the efficiency of accessing specific segments of the state. It achieves this by storing frequently accessed or important state fragments in a cache, enabling clients to retrieve them more quickly than repeatedly traversing Verkle trees.
 
-Our proposal of partial state caching complements our goals in these ways:
+## Our proposal of partial state caching complements our goals in these ways:
 
 - Improved Retrieval for Stateless Clients:
   Stateless clients lack the ability to store the full state and rely on external means to access data. By using partial state caching, we offer an efficient method for these clients to access vital state fragments, reducing their reliance on complex Verkle tree processes.
@@ -36,10 +37,7 @@ Our proposal of partial state caching complements our goals in these ways:
 - Improved Security and Reliability:
   Stateless clients face security risks with third-party state data. Incorporating cryptographic proofs and cached state fragments empowers clients to autonomously verify data integrity, boosting security and reliability in Ethereum network interactions.
 
-
 ## Roadmap
-
-
 Roadmap for MVP Development of Hybrid Witness Sharing and Stateless Account Abstraction Proposal:
 
 Phase 1: Research and Planning
