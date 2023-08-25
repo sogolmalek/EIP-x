@@ -81,15 +81,6 @@ Continuous Improvement: Continuously refine and optimize the MVP based on commun
 By following this roadmap, the development team can create a functional MVP showcasing the benefits of the hybrid witness sharing and stateless account abstraction proposal without the dependency on Verkle trees or protocol-level changes. The MVP can serve as a powerful demonstration of the proposed solution's potential and open up new possibilities for the Ethereum community.
 
 
-## Goal of the project
-
-Success for the  Stateless Account Abstraction project would be achieved when the proposed solution is 
-fully developed, implemented, and widely adopted within the Ethereum community. The end goal is to demonstrate a functional MVP 
-that showcases the benefits of hybrid witness sharing and stateless account abstraction while providing tangible improvements to 
-Ethereum's efficiency, scalability, and usability. All are accomplished without dependency to a statelessness roadmap or conduction 
-of changes within the core. 
-
-
 ## Collaborators
 Sogol Malek
 Luke Schoen
