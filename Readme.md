@@ -1,4 +1,4 @@
-## EIP-x: Empowering Stateless Light Clients: Enhancing Data Access and Efficiency through Stateless Verification and Cache Mechanism
+## EIP-x: Empowering Stateless Light Clients: Enhancing Data Access and Efficiency through Stateless Verification with State Provider and Cache Mechanism
 
 ## Motivation:
 
