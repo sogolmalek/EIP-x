@@ -11,6 +11,11 @@ Verkle trees allow very lightweight clients to consume proofs from other network
 This is where the Portal Network comes into play. While it allows the reading of random state data, it doesn't fully mitigate the core issue. The underlying challenge persists—efficiently accessing state data remains crucial for various tasks, including gas estimation. Additionally, Verkle trees, despite their benefits, don't inherently solve problems like federated access to the state.
 To bridge this gap, an innovative solution comes in the form of the Portal Network introducing a stateless verifier LC (Lightweight Client) with a partial state caching mechanism to enhance the efficiency of accessing specific segments of the state. It achieves this by storing frequently accessed or important state fragments in a cache, enabling clients to retrieve them more quickly than repeatedly traversing Verkle trees.
 
+To bring this vision to fruition, we propose the incorporation of two pivotal elements: a state provider that leverages the capabilities of Helios light clients, delivering zk proofs of the most recent state to all LC nodes, and a cache mechanism catering specifically to stateless light clients on the Portal Network, thereby optimizing their operations. Furthermore, this initiative strives to empower Verkle trees, enabling them to access and validate the mainnet state despite the scarcity of succinct witness proofs.
+
+## The synergy between these two components is noteworthy. Should inconsistencies or failures arise within the cache, participants can resort to the ZK proofs of the latest state, effectively validating the integrity of cached fragments.
+
+
 ## Our proposal of partial state caching complements our goals in these ways:
 
 - Improved Retrieval for Stateless Clients:
