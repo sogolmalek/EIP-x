@@ -13,7 +13,7 @@ To bridge this gap, an innovative solution comes in the form of the Portal Netwo
 
 To bring this vision to fruition, we propose the incorporation of two pivotal elements: a state provider that leverages the capabilities of Helios light clients, delivering zk proofs of the most recent state to all LC nodes, and a cache mechanism catering specifically to stateless light clients on the Portal Network, thereby optimizing their operations. Furthermore, this initiative strives to empower Verkle trees, enabling them to access and validate the mainnet state despite the scarcity of succinct witness proofs.
 
-## The synergy between these two components is noteworthy. Should inconsistencies or failures arise within the cache, participants can resort to the ZK proofs of the latest state, effectively validating the integrity of cached fragments.
+The synergy between these two components is noteworthy. Should inconsistencies or failures arise within the cache, participants can resort to the ZK proofs of the latest state, effectively validating the integrity of cached fragments.
 
 
 ## Our proposal of partial state caching complements our goals in these ways:
