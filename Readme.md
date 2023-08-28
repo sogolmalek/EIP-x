@@ -46,9 +46,13 @@ The synergy between these two components is noteworthy. Should inconsistencies o
 
 ## Roadmap
 
-step1: 
+step1: State provider entity including trustless RPC query for latest state( helios), generation of zk proof of the last state and propagation of the zkp to the protal netwrok clients like trim
 
-Step2: https://github.com/sogolmalek/EIP-x/issues/5#issuecomment-1694222160
+https://github.com/sogolmalek/EIP-x/issues/6#issue-1869376007
+
+Step2: A stateless verifier LC (Lightweight Client) with a partial state caching mechanism to enhance the efficiency of accessing specific segments of the state. It achieves this by storing frequently accessed or important state fragments in a cache, enabling clients to retrieve them more quickly than repeatedly traversing Verkle trees.By relying on zk-proofs to verify the state, users and applications can interact with the blockchain securely and efficiently. This approach empowers more participants to engage with the network without requiring extensive computational resources and storage, promoting network inclusivity.
+
+ https://github.com/sogolmalek/EIP-x/issues/5#issuecomment-1694222160
 
 
 
