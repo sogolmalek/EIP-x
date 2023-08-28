@@ -60,8 +60,8 @@ https://github.com/sogolmalek/EIP-x/issues/5#issuecomment-1694222160
 
 
 ## Collaborators
-Sogol Malek
-Luke Schoen
+Sogol Malek,
+Luke Schoen,
 Elvis Sabanovic
 
 ### Fellows 
@@ -69,9 +69,9 @@ Luke Schoen (EPF)
 
 ### Mentors
 
-Guillaume ballet 
-Matt Garnett
-Yoav Weiss
+Guillaume Ballet,
+Matt Garnett,
+Yoav Weiss,
 Sina Mahmoodi 
 
 ## Resources
