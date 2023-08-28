@@ -46,7 +46,9 @@ The synergy between these two components is noteworthy. Should inconsistencies o
 
 ## Roadmap
 
+step1: 
 
+Step2: https://github.com/sogolmalek/EIP-x/issues/5#issuecomment-1694222160
 
 
 
