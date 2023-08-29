@@ -23,56 +23,13 @@ If the transaction is valid, the verifier applies the transaction to the state i
 ## Roadmap
 
 
-Roadmap for MVP Development of Hybrid Witness Sharing and Stateless Account Abstraction Proposal:
+Step 1: State provider entity including trustless RPC query for latest state (to Helios light client from Axiom), generation of ZK proof of the last state using Axiom, and propagation of the ZK proof to the Portal Network clients like Trin.
 
-Phase 1: Research and Planning
+#6 (comment)
 
-1. Conduct In-Depth Research: Perform a comprehensive study of existing stateless account abstraction models,
-   hybrid witness sharing techniques, and their potential integration with Ethereum's current ERC-4337 architecture.
-   Identify any modifications required to adapt the ERC-4337 flow for the proposed solution.
+Step 2: A stateless verifier LC (Lightweight Client) with a partial state caching mechanism to enhance the efficiency of accessing specific segments of the state. It achieves this by storing frequently accessed or important state fragments in a cache, enabling clients to retrieve them more quickly than repeatedly traversing Verkle trees. By relying on ZK proofs to verify the state, users and applications can interact with the blockchain securely and efficiently. This approach empowers more participants to engage with the network without requiring extensive computational resources and storage, promoting network inclusivity.
 
-2. Define Use Cases: Identify and document specific use cases that will be showcased in the MVP to demonstrate
-   the benefits of the proposal. Consider scenarios where witness sharing and stateless account abstraction can lead
-   to improved efficiency, reduced gas consumption, and enhanced scalability.
-
-3. MVP Scope and Features: Define the scope of the MVP, including the core features that will be implemented,
-    such as state provider with zk-proof, witness sharing model, and the necessary modifications to the ERC-4337 architecture.
-
-Phase 2: Development
-
-1. Implement Witness Sharing Model: Develop the witness sharing model, leveraging cryptographic techniques like Merkle trees or zk-SNARKs.
-   The model should efficiently share witness information among multiple transactions, optimizing gas consumption for transaction validation.
-
-2. Stateless Account Provider with zk-Proof: Create a state provider that stores essential data required for transaction execution,
-  adhering to the stateless account abstraction concept. Implement zero-knowledge proofs (zk-proofs) to ensure data integrity and security.
-
-3. Implement Statelss Verifier as a light client
-
-Phase 3: Integration and Testing
-
-1.  Modify ERC-4337 Architecture: Make minor modifications to the ERC-4337 architecture to accommodate the proposed hybrid witness
-   sharing and stateless account abstraction. Ensure compatibility with existing smart contracts and functionalities while integrating the new components.
-3.  Integration with Bundler and Entry Point Smart Contract: Integrate the developed state provider and witness sharing model
-   with the bundler and entry point smart contract of ERC-4337. Verify that all components work seamlessly together to
-   facilitate transaction execution and witness sharing.
-
-4. MVP Testing: Conduct extensive testing to ensure the MVP's functionality, security, and performance. Perform unit testing,
-   integration testing, and simulate real-world scenarios to validate the proposal's benefits and use cases.
-
-
-Continuous Improvement: Continuously refine and optimize the MVP based on community feedback and new research findings.
- Explore potential enhancements, security updates, and additional features that can be incorporated to further improve the proposal's efficiency and scalability.
-
-By following this roadmap, the development team can create a functional MVP showcasing the benefits of the hybrid witness sharing and stateless account abstraction proposal without the dependency on Verkle trees or protocol-level changes. The MVP can serve as a powerful demonstration of the proposed solution's potential and open up new possibilities for the Ethereum community.
-
-
-## Goal of the project
-
-Success for the  Stateless Account Abstraction project would be achieved when the proposed solution is 
-fully developed, implemented, and widely adopted within the Ethereum community. The end goal is to demonstrate a functional MVP 
-that showcases the benefits of hybrid witness sharing and stateless account abstraction while providing tangible improvements to 
-Ethereum's efficiency, scalability, and usability. All are accomplished without dependency to a statelessness roadmap or conduction 
-of changes within the core. 
+#5 (comment)
 
 
 ## Collaborators
