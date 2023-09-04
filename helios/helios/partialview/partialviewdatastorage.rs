@@ -12,7 +12,7 @@ use serde_bytes::ByteBuf; // Import serde_bytes for binary data serialization
 // Temporary in-memory database
 #[derive(Default)]
 struct TemporaryDB {
-    checkpoint: Option<CheckpointData>, // Use your custom struct here
+    checkpoint: Option<CheckpointData>, 
 }
 
 impl TemporaryDB {
@@ -46,7 +46,7 @@ pub struct CheckpointData {
     field1: String,
     field2: u32,
     binary_data: ByteBuf, // Use serde_bytes for binary data serialization
-    // Add more fields as needed
+
 }
 
 #[derive(Default, Serialize, Deserialize)]
