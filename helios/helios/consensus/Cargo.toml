@@ -1,0 +1,39 @@
+[package]
+name = "consensus"
+version = "0.4.1"
+edition = "2021"
+
+[dependencies]
+# consensus
+ssz-rs.workspace = true
+milagro_bls.workspace = true
+
+# execution
+ethers.workspace = true
+
+# async/futures
+tokio.workspace = true
+futures.workspace = true
+async-trait.workspace = true
+
+# io
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+#misc
+eyre.workspace = true
+hex.workspace = true
+bytes.workspace = true
+log.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+superstruct.workspace = true
+wasm-timer.workspace = true
+
+common = { path = "../common" }
+config = { path = "../config" }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+openssl.workspace = true
+

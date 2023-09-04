@@ -1,0 +1,144 @@
+[package]
+name = "helios"
+version = "0.4.1"
+edition = "2021"
+autobenches = false
+exclude = [
+    "benches"
+]
+
+[workspace]
+members = [
+    "cli",
+    "client",
+    "common",
+    "config",
+    "consensus",
+    "execution",
+    "helios-ts",
+]
+
+default-members = ["cli"]
+
+######################################
+# Workspace Dependencies
+######################################
+
+[workspace.dependencies]
+# consensus
+ssz-rs = { package = "ssz_rs", version = "0.9.0" }
+milagro_bls = { git = "https://github.com/Snowfork/milagro_bls" }
+
+# execution
+ethers = "2.0.2"
+revm = { version = "3.3.0", default-features = false, features = ["std", "secp256k1", "serde"] }
+triehash-ethereum = { git = "https://github.com/openethereum/parity-ethereum", rev = "55c90d4016505317034e3e98f699af07f5404b63" }
+
+# async/futures
+async-trait = "0.1.57"
+futures = "0.3.23"
+tokio = { version = "1", features = ["rt", "sync", "macros"] }
+
+# io
+reqwest = { version = "0.11.13", features = ["json"] }
+serde = { version = "1.0.143", features = ["derive"] }
+serde_json = "1.0.85"
+
+# misc
+eyre = "0.6.8"
+hex = "0.4.3"
+bytes = "1.2.1"
+toml = "0.5.9"
+log = "0.4.17"
+chrono = "0.4.23"
+thiserror = "1.0.37"
+superstruct = "0.7.0"
+openssl = { version = "0.10", features = ["vendored"] }
+hyper = "0.14.23"
+wasm-timer = "0.2.5"
+
+######################################
+# Top Level Dependencies
+######################################
+
+[dependencies]
+client = { path = "./client" }
+config = { path = "./config" }
+common = { path = "./common" }
+consensus = { path = "./consensus" }
+execution = { path = "./execution" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+dotenv = "0.15.0"
+serde = { version = "1.0.154", features = ["derive"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+eyre = "0.6.8"
+dirs = "4.0.0"
+ethers = { version = "2.0.2", features = [ "abigen" ] }
+env_logger = "0.9.0"
+log = "0.4.17"
+tracing-test = "0.2.4"
+criterion = { version = "0.4", features = [ "async_tokio", "plotters" ]}
+plotters = "0.3.4"
+tempfile = "3.4.0"
+hex = "0.4.3"
+
+######################################
+# Profiles
+######################################
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.bench]
+debug = true
+
+######################################
+# Examples
+######################################
+
+[[example]]
+name = "checkpoints"
+path = "examples/checkpoints.rs"
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
+[[example]]
+name = "client"
+path = "examples/client.rs"
+
+[[example]]
+name = "config"
+path = "examples/config.rs"
+
+[[example]]
+name = "call"
+path = "examples/call.rs"
+
+######################################
+# Benchmarks
+######################################
+
+[[bench]]
+name = "file_db"
+harness = false
+
+[[bench]]
+name = "get_balance"
+harness = false
+
+[[bench]]
+name = "get_code"
+harness = false
+
+[[bench]]
+name = "sync"
+harness = false
