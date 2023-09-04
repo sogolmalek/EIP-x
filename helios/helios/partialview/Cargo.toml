@@ -15,10 +15,8 @@ futures.workspace = true
 ethers = "4"
 tokio = { version = "1", features = ["full"] }
 helios = "0.5"
-[dependencies]
 serde = "1"
 serde_json = "1"
-[dependencies]
 rmp-serde = "0.15"
 
 
