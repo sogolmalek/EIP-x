@@ -17,7 +17,7 @@ clap = { version = "3.2.18", features = ["derive", "env"] }
 dirs = "4.0.0"
 env_logger = "0.9.0"
 ctrlc = "3.2.3"
-lru_cache = "0.1.2.0"
+lru_cache = "0.3.1"
 
 client = { path = "../client" }
 config = { path = "../config" }
