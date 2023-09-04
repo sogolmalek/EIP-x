@@ -3,14 +3,16 @@ use std::str::FromStr;
 use ethers::types::{Address, Block, BlockTag, U256};
 use helios::{client::ClientBuilder, config::networks::Network, Database};
 use eyre::Result;
-use serde::{Deserialize, Serialize}; // Import serde traits
+use rmp_serde::{Deserializer, Serializer};
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::RwLock;
+use serde_bytes::ByteBuf; // Import serde_bytes for binary data serialization
 
 // Temporary in-memory database
 #[derive(Default)]
 struct TemporaryDB {
-    checkpoint: Option<String>, // Use String to store JSON checkpoint
+    checkpoint: Option<CheckpointData>, // Use your custom struct here
 }
 
 impl TemporaryDB {
@@ -24,29 +26,30 @@ impl helios::Database for TemporaryDB {
         Ok(Self::default())
     }
 
-    fn load_checkpoint(&self) -> Result<Vec<u8>> {
+    fn load_checkpoint(&self) -> Result<CheckpointData> {
         if let Some(checkpoint) = &self.checkpoint {
-            // Deserialize the JSON checkpoint
-            let bytes = checkpoint.as_bytes();
-            let deserialized_checkpoint: Vec<u8> = serde_json::from_slice(bytes)?;
-
-            Ok(deserialized_checkpoint)
+            Ok(checkpoint.clone()) // Return a clone of the stored checkpoint
         } else {
             Err(eyre::eyre!("No checkpoint found in the database"))
         }
     }
 
-    fn save_checkpoint(&self, checkpoint: Vec<u8>) -> Result<()> {
-        // Serialize the checkpoint to JSON
-        let serialized_checkpoint = serde_json::to_string(&checkpoint)?;
-
+    fn save_checkpoint(&mut self, checkpoint: CheckpointData) -> Result<()> {
         // For a temporary in-memory database, we simply update the checkpoint in memory.
-        self.checkpoint = Some(serialized_checkpoint);
+        self.checkpoint = Some(checkpoint);
         Ok(())
     }
 }
 
-#[derive(Default, Serialize, Deserialize)] // Add serialization and deserialization support
+#[derive(Serialize, Deserialize)]
+pub struct CheckpointData {
+    field1: String,
+    field2: u32,
+    binary_data: ByteBuf, // Use serde_bytes for binary data serialization
+    // Add more fields as needed
+}
+
+#[derive(Default, Serialize, Deserialize)]
 pub struct PartialViewDataStorage<D>
 where
     D: Database,
@@ -85,18 +88,28 @@ where
     }
 
     fn load_checkpoint(&mut self) -> Result<()> {
-        let checkpoint: Vec<u8> = self.database.load_checkpoint()?;
-        // No need for deserialization here since we'll be working with bytes
+        let checkpoint: CheckpointData = self.database.load_checkpoint()?;
+        // No need for deserialization here since we'll be working with the CheckpointData struct
 
         Ok(())
     }
 
     fn save_checkpoint(&self) -> Result<()> {
-        // Serialize the checkpoint to bytes
-        let serialized_checkpoint = vec![0, 1, 2, 3]; // Replace with your serialization logic
+        // Create a checkpoint struct with your data
+        let checkpoint = CheckpointData {
+            field1: "SomeData".to_string(),
+            field2: 42,
+            binary_data: ByteBuf::from(vec![0, 1, 2, 3]), // Example binary data
+            // Set other fields as needed
+        };
+
+        // Serialize the checkpoint using MessagePack
+        let mut buffer = Vec::new();
+        let mut serializer = Serializer::new(&mut buffer);
+        checkpoint.serialize(&mut serializer)?;
 
         // Save the serialized checkpoint to the database
-        self.database.save_checkpoint(serialized_checkpoint)?;
+        self.database.save_checkpoint(buffer.into())?;
 
         Ok(())
     }
@@ -143,3 +156,13 @@ async fn main() -> Result<()> {
 
     Ok(())
 }
+
+
+
+//We've added a binary_data field to the CheckpointData struct, which is an example of binary data serialized using the serde_bytes::ByteBuf type.
+
+//We've used the rmp_serde crate to serialize and deserialize the CheckpointData struct using MessagePack format.
+
+//The save_checkpoint method now serializes the CheckpointData struct into MessagePack format and saves it to the database.
+
+//The load_checkpoint method loads the MessagePack data from the database and deserializes it into a CheckpointData struct.
