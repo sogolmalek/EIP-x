@@ -10,3 +10,4 @@ artifacts
 
 # OpenZeppelin
 .openzeppelin/unknown-*.json
+.idea

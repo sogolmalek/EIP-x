@@ -1,16 +1,16 @@
 use std::net::IpAddr;
 use std::sync::Arc;
-use std::collections::HashMap;
-use lru_cache::LruCache; // Import the LruCache type
 
 use config::networks::Network;
 use ethers::prelude::{Address, U256};
 use ethers::types::{Filter, Log, SyncingStatus, Transaction, TransactionReceipt, H256};
 use eyre::{eyre, Result};
+
 use common::types::{Block, BlockTag};
 use config::Config;
 use execution::types::CallOpts;
 use log::{info, warn};
+
 use crate::node::Node;
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -138,7 +138,7 @@ impl ClientBuilder {
         };
 
         #[cfg(not(target_arch = "wasm32"))]
-        let rpc_bind_ip = if self.rpc_bind_ip.is_some() {
+            let rpc_bind_ip = if self.rpc_bind_ip.is_some() {
             self.rpc_bind_ip
         } else if let Some(config) = &self.config {
             config.rpc_bind_ip
@@ -147,7 +147,7 @@ impl ClientBuilder {
         };
 
         #[cfg(not(target_arch = "wasm32"))]
-        let rpc_port = if self.rpc_port.is_some() {
+            let rpc_port = if self.rpc_port.is_some() {
             self.rpc_port
         } else if let Some(config) = &self.config {
             config.rpc_port
@@ -156,7 +156,7 @@ impl ClientBuilder {
         };
 
         #[cfg(not(target_arch = "wasm32"))]
-        let data_dir = if self.data_dir.is_some() {
+            let data_dir = if self.data_dir.is_some() {
             self.data_dir
         } else if let Some(config) = &self.config {
             config.data_dir.clone()
@@ -217,7 +217,6 @@ pub struct Client {
     node: Arc<Node>,
     #[cfg(not(target_arch = "wasm32"))]
     rpc: Option<Rpc>,
-    block_cache: Arc<Mutex<LruCache<H256, Block>>>, // Block cache using LruCache
 }
 
 impl Client {
@@ -237,15 +236,6 @@ impl Client {
             #[cfg(not(target_arch = "wasm32"))]
             rpc,
         })
-         // Initialize the block cache with a specified capacity (e.g., 1000)
-    let block_cache = Arc::new(Mutex::new(LruCache::new(1000)));
-
-    Ok(Client {
-        node,
-        #[cfg(not(target_arch = "wasm32"))]
-        rpc,
-        block_cache, // Add block cache field
-    })
     }
 
     pub async fn start(&mut self) -> Result<()> {
@@ -279,29 +269,9 @@ impl Client {
     pub async fn get_nonce(&self, address: &Address, block: BlockTag) -> Result<u64> {
         self.node.get_nonce(address, block).await
     }
-//The cache is guarded by a RwLock to allow multiple threads to read from and write to the cache simultaneously safely.
-// When a block is requested, it first checks if it's in the cache. If it's found in the cache, it's returned directly. Otherwise,
-// it fetches the block from the node, stores it in the cache, and then returns it.
 
-    pub async fn get_block_by_hash(&self, hash: &H256, full_tx: bool) -> Result<Option<Block>> {
-        // Check if the block exists in the cache
-        {
-            let block_cache = self.block_cache.read().await;
-            if let Some(block) = block_cache.get(hash) {
-                return Ok(Some(block.clone()));
-            }
-        }
-
-        // If not found in the cache, make an RPC call to retrieve the block
-        let block = self.node.get_block_by_hash(hash, full_tx).await?;
-
-        // Store the block in the cache
-        {
-            let mut block_cache = self.block_cache.write().await;
-            block_cache.put(hash.clone(), block.clone());
-        }
-
-        Ok(Some(block))
+    pub async fn get_block_transaction_count_by_hash(&self, hash: &H256) -> Result<u64> {
+        self.node.get_block_transaction_count_by_hash(hash).await
     }
 
     pub async fn get_block_transaction_count_by_number(&self, block: BlockTag) -> Result<u64> {

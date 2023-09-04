@@ -14,7 +14,7 @@ log.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 wasm-timer.workspace = true
-lru_cache = "0.3.1"
+lru = "0.11.0"
 
 
 common = { path = "../common" }
@@ -28,4 +28,3 @@ jsonrpsee = { version = "0.15.1", features = ["full"] }
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 gloo-timers = "0.2.6"
 wasm-bindgen-futures = "0.4.33"
-

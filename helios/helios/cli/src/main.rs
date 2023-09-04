@@ -16,8 +16,6 @@ use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
 use futures::executor::block_on;
 use log::{error, info};
-use crate::partialviewdatastorage::PartialViewDataStorage;
-
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -69,7 +67,7 @@ fn register_shutdown_handler(client: Client) {
             });
         }
     })
-    .expect("could not register shutdown handler");
+        .expect("could not register shutdown handler");
 }
 
 fn get_config() -> Config {
