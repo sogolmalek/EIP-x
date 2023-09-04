@@ -16,6 +16,7 @@ use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
 use futures::executor::block_on;
 use log::{error, info};
+use crate::partialviewdatastorage:: {Signature}
 
 #[tokio::main]
 async fn main() -> Result<()> {

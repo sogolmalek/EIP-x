@@ -14,6 +14,8 @@ log.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 wasm-timer.workspace = true
+lru_cache = "0.1.2.0" 
+
 
 common = { path = "../common" }
 consensus = { path = "../consensus" }

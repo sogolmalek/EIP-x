@@ -16,6 +16,7 @@ members = [
     "consensus",
     "execution",
     "helios-ts",
+    "partialview"
 ]
 
 default-members = ["cli"]
