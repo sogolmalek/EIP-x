@@ -1,18 +1,22 @@
-use std::collections::{HashMap, VecDeque};
-use std::str::FromStr;
 use ethers::types::{Address, Block, BlockTag, U256};
+use eyre::{Report, Result};
 use helios::{client::ClientBuilder, config::networks::Network, Database};
-use eyre::Result;
 use rmp_serde::{Deserializer, Serializer};
 use serde::{Deserialize, Serialize};
+use serde_bytes::ByteBuf;
+use std::collections::{HashMap, VecDeque};
+use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use serde_bytes::ByteBuf; // Import serde_bytes for binary data serialization
+use common::types::BlockTag;
+use config::Network;
+
+// Import serde_bytes for binary data serialization
 
 // Temporary in-memory database
 #[derive(Default)]
 struct TemporaryDB {
-    checkpoint: Option<CheckpointData>, 
+    checkpoint: Option<CheckpointData>,
 }
 
 impl TemporaryDB {
@@ -26,7 +30,7 @@ impl helios::Database for TemporaryDB {
         Ok(Self::default())
     }
 
-    fn load_checkpoint(&self) -> Result<CheckpointData> {
+    fn load_checkpoint(&self) -> std::result::Result<&CheckpointData, Report> {
         if let Some(checkpoint) = &self.checkpoint {
             Ok(checkpoint.clone()) // Return a clone of the stored checkpoint
         } else {
@@ -46,13 +50,12 @@ pub struct CheckpointData {
     field1: String,
     field2: u32,
     binary_data: ByteBuf, // Use serde_bytes for binary data serialization
-
 }
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct PartialViewDataStorage<D>
-where
-    D: Database,
+    where
+        D: Database,
 {
     partial_view_data: HashMap<Address, U256>,
     address_queue: VecDeque<Address>,
@@ -61,8 +64,8 @@ where
 }
 
 impl<D> PartialViewDataStorage<D>
-where
-    D: Database,
+    where
+        D: Database,
 {
     pub fn new(max_queue_capacity: usize, database: D) -> Result<Self> {
         let mut storage = PartialViewDataStorage {
@@ -78,7 +81,8 @@ where
         Ok(storage)
     }
 
-    pub fn query_and_store(&mut self, address: Address) -> Result<()> {
+    // @todo: query and store
+    pub fn query_and_store(&mut self, _address: Address) -> Result<()> {
         // Query and store data as before
 
         // After storing data, save the checkpoint to the database
@@ -114,49 +118,6 @@ where
         Ok(())
     }
 }
-
-#[tokio::main]
-async fn main() -> Result<()> {
-    // Replace this with your actual Helios RPC URL
-    let helios_rpc_url = "https://helios-rpc-url.com";
-
-    // Replace this with the address we want to query
-    let address_str = "0x0000000000000000000000000000000000000000";
-    let address = Address::from_str(address_str)?;
-
-    // Create a new Helios client with the temporary in-memory database
-    let mut client = ClientBuilder::new()
-        .network(Network::MAINNET)
-        .execution_rpc(helios_rpc_url)
-        .database(TemporaryDB::new())
-        .build()?;
-
-    // Start the client
-    client.start().await?;
-
-    // Query the latest block number
-    let block_number = client.get_block_number().await?;
-    println!("Latest block number: {}", block_number);
-
-    // Query the balance of the specified address at the latest block
-    let balance = client.get_balance(&address, BlockTag::Latest).await?;
-    println!(
-        "Balance of {}: {}",
-        address_str,
-        ethers::utils::format_ether(balance)
-    );
-
-    // Query the latest block
-    let latest_block: Option<Block> = client.get_block(BlockTag::Latest).await?;
-    if let Some(block) = latest_block {
-        println!("Latest block details: {:?}", block);
-    } else {
-        println!("Latest block not found");
-    }
-
-    Ok(())
-}
-
 
 
 //We've added a binary_data field to the CheckpointData struct, which is an example of binary data serialized using the serde_bytes::ByteBuf type.

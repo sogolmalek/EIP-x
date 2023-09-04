@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/cli/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/client/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/common/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/config/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/config/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/consensus/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/consensus/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/execution/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/execution/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/helios-ts/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/partial_view/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helios/helios/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/helios/helios/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
