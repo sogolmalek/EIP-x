@@ -1,3 +1,6 @@
+# Opt-in to the workspace-inheritance feature
+cargo-features = ["workspace-inheritance"]
+
 [package]
 name = "client"
 version = "0.4.1"
@@ -15,7 +18,6 @@ thiserror.workspace = true
 tokio.workspace = true
 wasm-timer.workspace = true
 lru = "0.11.0"
-
 
 common = { path = "../common" }
 consensus = { path = "../consensus" }

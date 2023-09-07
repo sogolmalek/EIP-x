@@ -11,6 +11,8 @@ use common::utils::hex_str_to_bytes;
 use dirs::home_dir;
 use env_logger::Env;
 use eyre::Result;
+use ethers::prelude::Address; 
+
 
 use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
@@ -22,7 +24,19 @@ async fn main() -> Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     let config = get_config();
-    let mut client = match ClientBuilder::new().config(config).build() {
+    
+    // Define your target addresses here
+    let target_addresses = vec![
+        Address::from_str("0xYourTargetAddress1").unwrap(),
+        Address::from_str("0xYourTargetAddress2").unwrap(),
+    ];
+
+    // Create the Helios client with the specified target addresses
+    let mut client = match ClientBuilder::new()
+        .config(config)
+        .target_addresses(target_addresses.clone()) // Pass target addresses here
+        .build()
+    {
         Ok(client) => client,
         Err(err) => {
             error!("{}", err);
@@ -38,6 +52,10 @@ async fn main() -> Result<()> {
     register_shutdown_handler(client);
     std::future::pending().await
 }
+
+    register_shutdown_handler(client);
+    std::future::pending().await
+
 
 fn register_shutdown_handler(client: Client) {
     let client = Arc::new(client);

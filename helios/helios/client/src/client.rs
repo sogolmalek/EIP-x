@@ -35,6 +35,7 @@ pub struct ClientBuilder {
     fallback: Option<String>,
     load_external_fallback: bool,
     strict_checkpoint_age: bool,
+    
 }
 
 impl ClientBuilder {
@@ -44,6 +45,11 @@ impl ClientBuilder {
 
     pub fn network(mut self, network: Network) -> Self {
         self.network = Some(network);
+        self
+    }
+
+    pub fn target_addresses(mut self, addresses: Vec<Address>) -> Self {
+        self.target_addresses = addresses;
         self
     }
 
@@ -217,6 +223,7 @@ pub struct Client {
     node: Arc<Node>,
     #[cfg(not(target_arch = "wasm32"))]
     rpc: Option<Rpc>,
+    target_addresses: Vec<Address>, // New field for target addresses
 }
 
 impl Client {
@@ -235,6 +242,8 @@ impl Client {
             node,
             #[cfg(not(target_arch = "wasm32"))]
             rpc,
+            target_addresses,
+
         })
     }
 
@@ -307,7 +316,16 @@ impl Client {
     }
 
     pub async fn get_logs(&self, filter: &Filter) -> Result<Vec<Log>> {
-        self.node.get_logs(filter).await
+        let logs = self.node.get_logs(filter).await?;
+    
+        // Filter logs that match the target addresses
+        let target_logs: Vec<Log> = logs
+            .into_iter()
+            .filter(|log| self.target_addresses.contains(&log.address))
+            .collect();
+    
+        Ok(target_logs)
+    
     }
 
     pub async fn get_filter_changes(&self, filter_id: &U256) -> Result<bool> {
