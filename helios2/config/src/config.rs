@@ -11,7 +11,7 @@ use serde::Deserialize;
 use std::net::{IpAddr, Ipv4Addr};
 use std::str::FromStr;
 use std::{path::PathBuf, process::exit};
-
+use ethers::prelude::Address;
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {
     pub consensus_rpc: String,
@@ -30,6 +30,7 @@ pub struct Config {
     pub fallback: Option<String>,
     pub load_external_fallback: bool,
     pub strict_checkpoint_age: bool,
+    pub target_addresses: Option<Vec<Address>>,
 }
 
 impl Config {

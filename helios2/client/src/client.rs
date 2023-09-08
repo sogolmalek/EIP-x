@@ -35,7 +35,7 @@ pub struct ClientBuilder {
     fallback: Option<String>,
     load_external_fallback: bool,
     strict_checkpoint_age: bool,
-    
+    target_addresses: Option<Vec<Address>>,   
 }
 
 impl ClientBuilder {
@@ -49,7 +49,7 @@ impl ClientBuilder {
     }
 
     pub fn target_addresses(mut self, addresses: Vec<Address>) -> Self {
-        self.target_addresses = addresses;
+        self.target_addresses = Some(addresses);
         self
     }
 
@@ -213,6 +213,7 @@ impl ClientBuilder {
             fallback,
             load_external_fallback,
             strict_checkpoint_age,
+            target_addresses: None,
         };
 
         Client::new(config)
@@ -242,9 +243,7 @@ impl Client {
             node,
             #[cfg(not(target_arch = "wasm32"))]
             rpc,
-            target_addresses,
-
-        })
+            target_addresses: config.target_addresses.clone().unwrap(),        })
     }
 
     pub async fn start(&mut self) -> Result<()> {
