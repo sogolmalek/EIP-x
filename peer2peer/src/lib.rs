@@ -4,8 +4,10 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 // Placeholder for Axiom ZK usage
 mod axiom_zk {
+    use super::*;
     pub fn verify_proof(_proof: Vec<u8>) -> bool {
         // Replace this with actual Axiom ZK verification code
+        todo!();
         true
     }
 }
@@ -55,5 +57,53 @@ async fn handle_connection(mut socket: TcpStream) {
             }
         }
         Err(e) => eprintln!("Failed to read from socket: {}", e),
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tokio::io::AsyncWriteExt;
+    use tokio::net::TcpListener;
+    use tokio::runtime::Runtime;
+
+    #[test]
+    fn test_verify_proof() {
+        let proof = vec![1, 2, 3, 4, 5];
+        assert_eq!(axiom_zk::verify_proof(proof), true);
+    }
+
+    #[test]
+    fn test_zk_proof_message_serialization() {
+        let message = ZkProofMessage {
+            proof: vec![1, 2, 3, 4, 5],
+            block_number: 10,
+        };
+
+        let serialized = serde_json::to_vec(&message).unwrap();
+        let deserialized: ZkProofMessage = serde_json::from_slice(&serialized).unwrap();
+
+        assert_eq!(message.proof, deserialized.proof);
+        assert_eq!(message.block_number, deserialized.block_number);
+    }
+
+    #[test]
+    fn test_handle_connection() {
+        let rt = Runtime::new().unwrap();
+        rt.block_on(async {
+            let listener = TcpListener::bind("127.0.0.1:8081").await.unwrap();
+            let (mut socket, _) = listener.accept().await.unwrap();
+
+            let message = ZkProofMessage {
+                proof: vec![1, 2, 3, 4, 5],
+                block_number: 10,
+            };
+
+            let serialized = serde_json::to_vec(&message).unwrap();
+            socket.write_all(&serialized).await.unwrap();
+
+            tokio::spawn(handle_connection(socket));
+        });
     }
 }

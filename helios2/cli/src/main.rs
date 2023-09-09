@@ -26,6 +26,7 @@ async fn main() -> Result<()> {
     let config = get_config();
     
     // Define your target addresses here
+    // We shouldnt need this any, as we pass the addresses as optional flags in the cli
     let target_addresses = vec![
         Address::from_str("0xYourTargetAddress1").unwrap(),
         Address::from_str("0xYourTargetAddress2").unwrap(),
@@ -122,6 +123,9 @@ struct Cli {
     load_external_fallback: bool,
     #[clap(short = 's', long, env)]
     strict_checkpoint_age: bool,
+    #[clap(short = 'a', long, env)]
+    target_addresses: Option<Vec<Address>>,
+
 }
 
 impl Cli {
@@ -141,6 +145,7 @@ impl Cli {
             fallback: self.fallback.clone(),
             load_external_fallback: self.load_external_fallback,
             strict_checkpoint_age: self.strict_checkpoint_age,
+            target_addresses: self.target_addresses,
         }
     }
 

@@ -7,20 +7,6 @@ exclude = [
     "benches"
 ]
 
-[workspace]
-members = [
-    "cli",
-    "client",
-    "common",
-    "config",
-    "consensus",
-    "execution",
-    "helios-ts",
-    "partial_view"
-]
-
-default-members = ["cli"]
-
 ######################################
 # Workspace Dependencies
 ######################################
