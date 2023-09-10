@@ -643,6 +643,7 @@ dependencies = [
  "ctrlc",
  "dirs 4.0.0",
  "env_logger",
+ "ethers",
  "eyre",
  "futures",
  "log",
@@ -3182,23 +3183,6 @@ dependencies = [
  "redox_syscall 0.3.5",
  "smallvec 1.11.0",
  "windows-targets",
-]
-
-[[package]]
-name = "partial_view"
-version = "0.1.0"
-dependencies = [
- "clap",
- "client",
- "common",
- "config",
- "ctrlc",
- "dirs 4.0.0",
- "env_logger",
- "eyre",
- "futures",
- "log",
- "tokio",
 ]
 
 [[package]]

@@ -8,12 +8,10 @@ members = [
     "helios/consensus",
     "helios/execution",
     "helios/helios-ts",
-    "helios/partial_view",
     "peer2peer"
 ]
 
-default-members = ["helios/cli"]
-
+default-members = ["helios/cli",]
 ######################################
 # Workspace Dependencies
 ######################################
