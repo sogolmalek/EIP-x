@@ -1,6 +1,3 @@
-[submodule "helios"]
-	path = helios
-	url = https://github.com/a16z/helios.git
 [submodule "ethereum-proof"]
 	path = ethereum-proof
 	url = https://github.com/sogolmalek/ethereum-proof
