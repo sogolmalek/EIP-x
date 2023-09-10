@@ -14,7 +14,6 @@ use eyre::Result;
 
 use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
-use ethers::types::Address;
 use futures::executor::block_on;
 use log::{error, info};
 
@@ -32,11 +31,7 @@ async fn main() -> Result<()> {
     // ];
 
     // Create the Helios client with the specified target addresses
-    let mut client = match ClientBuilder::new()
-        .config(config)
-        // .target_addresses(target_addresses.clone()) // Pass target addresses here
-        .build()
-    {
+    let mut client = match ClientBuilder::new().config(config).build() {
         Ok(client) => client,
         Err(err) => {
             error!("{}", err);
@@ -128,10 +123,6 @@ impl Cli {
             .checkpoint
             .as_ref()
             .map(|c| hex_str_to_bytes(c).expect("invalid checkpoint"));
-
-        // let target_addresses = self.target_addresses.as_ref().map(|addresses| {
-        //     addresses.iter().map(|address| address.to_string()).collect()
-        // });
 
         CliConfig {
             checkpoint,

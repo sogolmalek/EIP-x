@@ -1,4 +1,3 @@
-use ethers::types::Address;
 use std::net::IpAddr;
 use std::{collections::HashMap, path::PathBuf};
 
@@ -75,5 +74,4 @@ impl CliConfig {
 
         Serialized::from(user_dict, network)
     }
-
 }
