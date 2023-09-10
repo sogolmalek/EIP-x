@@ -1,55 +1,66 @@
+use client::ClientBuilder;
 use common::types::BlockTag;
-use config::Network;
-use ethers::types::{Address, Block, BlockTag, U256};
+use config::networks::Network;
+use consensus::database::Database;
+// use config::Network;
+use config::Config;
+use ethers::types::{Address, U256};
 use eyre::{Report, Result};
-use helios::{client::ClientBuilder, config::networks::Network, Database};
 use rmp_serde::{Deserializer, Serializer};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
+use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
 use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-
 // Import serde_bytes for binary data serialization
-
-// Temporary in-memory database
-#[derive(Default)]
-struct TemporaryDB {
-    checkpoint: Option<CheckpointData>,
-}
-
-impl TemporaryDB {
-    fn new() -> Self {
-        Self::default()
-    }
-}
-
-impl helios::Database for TemporaryDB {
-    fn new(_config: &helios::Config) -> Result<Self> {
-        Ok(Self::default())
-    }
-
-    fn load_checkpoint(&self) -> std::result::Result<&CheckpointData, Report> {
-        if let Some(checkpoint) = &self.checkpoint {
-            Ok(checkpoint.as_ref()) // Return a clone of the stored checkpoint
-        } else {
-            Err(eyre::eyre!("No checkpoint found in the database"))
-        }
-    }
-
-    fn save_checkpoint(&mut self, checkpoint: CheckpointData) -> Result<()> {
-        // For a temporary in-memory database, we simply update the checkpoint in memory.
-        self.checkpoint = Some(checkpoint);
-        Ok(())
-    }
-}
 
 #[derive(Serialize, Deserialize)]
 pub struct CheckpointData {
     field1: String,
     field2: u32,
     binary_data: ByteBuf, // Use serde_bytes for binary data serialization
+}
+
+// Temporary in-memory database
+#[derive(Default)]
+struct TemporaryDB {
+    checkpoint: RefCell<Option<CheckpointData>>,
+}
+
+// @dev Do we need this ?
+impl TemporaryDB {
+    fn new() -> Self {
+        Self::default()
+    }
+}
+
+impl Database for TemporaryDB {
+    fn new(_config: &Config) -> Result<Self> {
+        Ok(Self::default())
+    }
+
+    // @dev: We need to return a Vec<u8> here , as the return values need to match the traits implementation.
+    // see consensus/database.rs
+
+    fn load_checkpoint(&self) -> Result<Vec<u8>, Report> {
+        if let Some(checkpoint) = self.checkpoint.borrow().as_ref() {
+            let serialized =
+                rmp_serde::to_vec(checkpoint).map_err(|e| eyre::eyre!(e.to_string()))?;
+            Ok(serialized)
+        } else {
+            Err(eyre::eyre!("No checkpoint found in the database"))
+        }
+    }
+    fn save_checkpoint(&self, checkpoint: &[u8]) -> Result<()> {
+        let checkpoint_data =
+            rmp_serde::from_slice(checkpoint).map_err(|e| eyre::eyre!(e.to_string()))?;
+
+        // For a temporary in-memory database, we simply update the checkpoint in memory.
+        *self.checkpoint.borrow_mut() = Some(checkpoint_data);
+        Ok(())
+    }
 }
 
 #[derive(Default, Serialize, Deserialize)]
@@ -86,26 +97,27 @@ where
         // Query and store data as before
 
         // After storing data, save the checkpoint to the database
-        self.save_checkpoint()?;
-
-        Ok(())
+        // self.save_checkpoint()?;
+        unimplemented!();
     }
 
     fn load_checkpoint(&mut self) -> Result<()> {
-        let checkpoint: CheckpointData = self.database.load_checkpoint()?;
-        // No need for deserialization here since we'll be working with the CheckpointData struct
-
+        let checkpoint_bytes: Vec<u8> = self.database.load_checkpoint()?;
+        let checkpoint: CheckpointData =
+            rmp_serde::from_slice(&checkpoint_bytes).map_err(|e| eyre::eyre!(e.to_string()))?;
         Ok(())
     }
 
-    fn save_checkpoint(&self) -> Result<()> {
+    fn save_checkpoint(&self, checkpoint: &[u8]) -> Result<()> {
         // Create a checkpoint struct with your data
-        let checkpoint = CheckpointData {
-            field1: "SomeData".to_string(),
-            field2: 42,
-            binary_data: ByteBuf::from(vec![0, 1, 2, 3]), // Example binary data
-                                                          // Set other fields as needed
-        };
+        // let checkpoint = CheckpointData {
+        //     field1: "SomeData".to_string(),
+        //     field2: 42,
+        //     binary_data: ByteBuf::from(vec![0, 1, 2, 3]), // Example binary data
+        //                                                   // Set other fields as needed
+        // };
+        let checkpoint_data =
+            rmp_serde::from_slice(checkpoint).map_err(|e| eyre::eyre!(e.to_string()))?;
 
         // Serialize the checkpoint using MessagePack
         let mut buffer = Vec::new();
@@ -113,7 +125,7 @@ where
         checkpoint.serialize(&mut serializer)?;
 
         // Save the serialized checkpoint to the database
-        self.database.save_checkpoint(buffer.into())?;
+        self.database.save_checkpoint(&buffer)?;
 
         Ok(())
     }
@@ -165,7 +177,7 @@ mod tests {
             field2: 123,
             binary_data: ByteBuf::from(vec![0, 1, 2, 3]),
         };
-        storage.save_checkpoint(checkpoint_data.clone())?;
+        storage.save_checkpoint()?;
 
         // Test load_checkpoint
         let loaded_checkpoint = storage.load_checkpoint()?;

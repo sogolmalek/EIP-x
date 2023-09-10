@@ -17,3 +17,8 @@ ctrlc = "3.2.3"
 client = { path = "../client" }
 config = { path = "../config" }
 common = { path = "../common" }
+consensus = { path = "../consensus" }
+ethers.workspace = true
+serde_bytes = "0.11.12"
+serde.workspace = true
+rmp-serde = "1.1.2"
