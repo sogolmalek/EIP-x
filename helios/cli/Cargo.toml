@@ -1,0 +1,30 @@
+[package]
+name = "cli"
+version = "0.4.1"
+edition = "2021"
+
+[[bin]]
+name = "helios"
+path = "src/main.rs"
+
+[dependencies]
+# Each dependency should be listed individually
+tokio = { version = "1", features = ["full"] }
+eyre = "0.6.5"
+log = "0.4.14"
+futures = "0.3.17"
+
+clap = { version = "3.2.18", features = ["derive", "env"] }
+dirs = "4.0.0"
+env_logger = "0.9.0"
+ctrlc = "3.2.3"
+ethers.workspace = true
+
+[dependencies.client]
+path = "../client"
+
+[dependencies.config]
+path = "../config"
+
+[dependencies.common]
+path = "../common"
