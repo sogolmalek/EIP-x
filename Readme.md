@@ -62,9 +62,11 @@ https://github.com/sogolmalek/EIP-x/issues/5#issuecomment-1694222160
 ## Collaborators
 Sogol Malek,
 Luke Schoen,
+Samuel Dare,
 Elvis Sabanovic
 
 ### Fellows 
+Sogol Malek (EPF)
 Luke Schoen (EPF)
 
 ### Mentors
