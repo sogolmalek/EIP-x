@@ -3,6 +3,7 @@ use crate::cli::CliConfig;
 use crate::types::{ChainConfig, Forks};
 use crate::utils::{bytes_deserialize, bytes_opt_deserialize};
 use crate::Network;
+use ethers::prelude::Address;
 use figment::{
     providers::{Format, Serialized, Toml},
     Figment,
@@ -11,7 +12,6 @@ use serde::Deserialize;
 use std::net::{IpAddr, Ipv4Addr};
 use std::str::FromStr;
 use std::{path::PathBuf, process::exit};
-use ethers::prelude::Address;
 #[derive(Deserialize, Debug, Default)]
 pub struct Config {
     pub consensus_rpc: String,

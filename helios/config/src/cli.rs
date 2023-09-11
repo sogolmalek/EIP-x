@@ -16,6 +16,7 @@ pub struct CliConfig {
     pub fallback: Option<String>,
     pub load_external_fallback: bool,
     pub strict_checkpoint_age: bool,
+    pub target_addresses: Option<Vec<String>>,
 }
 
 impl CliConfig {
@@ -36,6 +37,19 @@ impl CliConfig {
 
         if let Some(ip) = self.rpc_bind_ip {
             user_dict.insert("rpc_bind_ip", Value::from(ip.to_string()));
+        }
+
+        // @dev : This is a hack , a we cant use figment's Value on Addresses (H160)
+        if let Some(target_addresses) = &self.target_addresses {
+            let addresses_as_values: Vec<Value> = target_addresses
+                .iter()
+                .map(|address| Value::from(address.clone()))
+                .collect();
+            user_dict.insert("target_addresses", Value::from(addresses_as_values));
+        }
+
+        if let Some(port) = self.rpc_port {
+            user_dict.insert("rpc_port", Value::from(port));
         }
 
         if let Some(port) = self.rpc_port {

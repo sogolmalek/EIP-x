@@ -8,8 +8,10 @@ use eyre::{eyre, Result};
 
 use common::types::{Block, BlockTag};
 use config::Config;
+// use ethers::prelude::FromStr;
 use execution::types::CallOpts;
 use log::{info, warn};
+// use std::str::FromStr;
 
 use crate::node::Node;
 
@@ -35,7 +37,7 @@ pub struct ClientBuilder {
     fallback: Option<String>,
     load_external_fallback: bool,
     strict_checkpoint_age: bool,
-    target_addresses: Option<Vec<Address>>,   
+    target_addresses: Option<Vec<Address>>,
 }
 
 impl ClientBuilder {
@@ -52,6 +54,12 @@ impl ClientBuilder {
         self.target_addresses = Some(addresses);
         self
     }
+
+    // pub fn target_addresses(mut self, addresses: Vec<String>) -> Result<Self, Box<dyn std::error::Error>> {
+    //     let addresses: Result<Vec<Address>, _> = addresses.into_iter().map(|s| Address::from_str(&s)).collect();
+    //     self.target_addresses = Some(addresses.unwrap());
+    //     Ok(self)
+    // }
 
     pub fn consensus_rpc(mut self, consensus_rpc: &str) -> Self {
         self.consensus_rpc = Some(consensus_rpc.to_string());
@@ -144,7 +152,7 @@ impl ClientBuilder {
         };
 
         #[cfg(not(target_arch = "wasm32"))]
-            let rpc_bind_ip = if self.rpc_bind_ip.is_some() {
+        let rpc_bind_ip = if self.rpc_bind_ip.is_some() {
             self.rpc_bind_ip
         } else if let Some(config) = &self.config {
             config.rpc_bind_ip
@@ -153,7 +161,7 @@ impl ClientBuilder {
         };
 
         #[cfg(not(target_arch = "wasm32"))]
-            let rpc_port = if self.rpc_port.is_some() {
+        let rpc_port = if self.rpc_port.is_some() {
             self.rpc_port
         } else if let Some(config) = &self.config {
             config.rpc_port
@@ -162,7 +170,7 @@ impl ClientBuilder {
         };
 
         #[cfg(not(target_arch = "wasm32"))]
-            let data_dir = if self.data_dir.is_some() {
+        let data_dir = if self.data_dir.is_some() {
             self.data_dir
         } else if let Some(config) = &self.config {
             config.data_dir.clone()
@@ -189,6 +197,14 @@ impl ClientBuilder {
         } else {
             self.strict_checkpoint_age
         };
+        
+        let target_addresses: Option<Vec<Address>> = if self.target_addresses.is_some() {
+            self.target_addresses
+        } else if let Some(config) = &self.config {
+            config.target_addresses.clone()
+        } else {
+            None
+        };
 
         let config = Config {
             consensus_rpc,
@@ -213,7 +229,7 @@ impl ClientBuilder {
             fallback,
             load_external_fallback,
             strict_checkpoint_age,
-            target_addresses: None,
+            target_addresses,
         };
 
         Client::new(config)
@@ -243,7 +259,8 @@ impl Client {
             node,
             #[cfg(not(target_arch = "wasm32"))]
             rpc,
-            target_addresses: config.target_addresses.clone().unwrap(),        })
+            target_addresses: config.target_addresses.clone().unwrap(),
+        })
     }
 
     pub async fn start(&mut self) -> Result<()> {
@@ -316,15 +333,14 @@ impl Client {
 
     pub async fn get_logs(&self, filter: &Filter) -> Result<Vec<Log>> {
         let logs = self.node.get_logs(filter).await?;
-    
+
         // Filter logs that match the target addresses
         let target_logs: Vec<Log> = logs
             .into_iter()
             .filter(|log| self.target_addresses.contains(&log.address))
             .collect();
-    
+
         Ok(target_logs)
-    
     }
 
     pub async fn get_filter_changes(&self, filter_id: &U256) -> Result<bool> {

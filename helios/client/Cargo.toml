@@ -1,6 +1,3 @@
-# Opt-in to the workspace-inheritance feature
-cargo-features = ["workspace-inheritance"]
-
 [package]
 name = "client"
 version = "0.4.1"

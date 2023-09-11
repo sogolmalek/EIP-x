@@ -11,8 +11,6 @@ use common::utils::hex_str_to_bytes;
 use dirs::home_dir;
 use env_logger::Env;
 use eyre::Result;
-use ethers::prelude::Address; 
-
 
 use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
@@ -24,20 +22,16 @@ async fn main() -> Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     let config = get_config();
-    
+
     // Define your target addresses here
     // We shouldnt need this any, as we pass the addresses as optional flags in the cli
-    let target_addresses = vec![
-        Address::from_str("0xYourTargetAddress1").unwrap(),
-        Address::from_str("0xYourTargetAddress2").unwrap(),
-    ];
+    // let target_addresses = vec![
+    //     Address::from_str("0xYourTargetAddress1").unwrap(),
+    //     Address::from_str("0xYourTargetAddress2").unwrap(),
+    // ];
 
     // Create the Helios client with the specified target addresses
-    let mut client = match ClientBuilder::new()
-        .config(config)
-        .target_addresses(target_addresses.clone()) // Pass target addresses here
-        .build()
-    {
+    let mut client = match ClientBuilder::new().config(config).build() {
         Ok(client) => client,
         Err(err) => {
             error!("{}", err);
@@ -53,10 +47,6 @@ async fn main() -> Result<()> {
     register_shutdown_handler(client);
     std::future::pending().await
 }
-
-    register_shutdown_handler(client);
-    std::future::pending().await
-
 
 fn register_shutdown_handler(client: Client) {
     let client = Arc::new(client);
@@ -86,7 +76,7 @@ fn register_shutdown_handler(client: Client) {
             });
         }
     })
-        .expect("could not register shutdown handler");
+    .expect("could not register shutdown handler");
 }
 
 fn get_config() -> Config {
@@ -124,8 +114,7 @@ struct Cli {
     #[clap(short = 's', long, env)]
     strict_checkpoint_age: bool,
     #[clap(short = 'a', long, env)]
-    target_addresses: Option<Vec<Address>>,
-
+    target_addresses: Option<Vec<String>>,
 }
 
 impl Cli {
@@ -145,7 +134,7 @@ impl Cli {
             fallback: self.fallback.clone(),
             load_external_fallback: self.load_external_fallback,
             strict_checkpoint_age: self.strict_checkpoint_age,
-            target_addresses: self.target_addresses,
+            target_addresses: self.target_addresses.clone(),
         }
     }
 

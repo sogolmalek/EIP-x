@@ -1,3 +1,5 @@
+use common::types::BlockTag;
+use config::Network;
 use ethers::types::{Address, Block, BlockTag, U256};
 use eyre::{Report, Result};
 use helios::{client::ClientBuilder, config::networks::Network, Database};
@@ -8,8 +10,6 @@ use std::collections::{HashMap, VecDeque};
 use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use common::types::BlockTag;
-use config::Network;
 
 // Import serde_bytes for binary data serialization
 
@@ -32,7 +32,7 @@ impl helios::Database for TemporaryDB {
 
     fn load_checkpoint(&self) -> std::result::Result<&CheckpointData, Report> {
         if let Some(checkpoint) = &self.checkpoint {
-            Ok(checkpoint.clone()) // Return a clone of the stored checkpoint
+            Ok(checkpoint.as_ref()) // Return a clone of the stored checkpoint
         } else {
             Err(eyre::eyre!("No checkpoint found in the database"))
         }
@@ -54,8 +54,8 @@ pub struct CheckpointData {
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct PartialViewDataStorage<D>
-    where
-        D: Database,
+where
+    D: Database,
 {
     partial_view_data: HashMap<Address, U256>,
     address_queue: VecDeque<Address>,
@@ -64,8 +64,8 @@ pub struct PartialViewDataStorage<D>
 }
 
 impl<D> PartialViewDataStorage<D>
-    where
-        D: Database,
+where
+    D: Database,
 {
     pub fn new(max_queue_capacity: usize, database: D) -> Result<Self> {
         let mut storage = PartialViewDataStorage {
@@ -104,7 +104,7 @@ impl<D> PartialViewDataStorage<D>
             field1: "SomeData".to_string(),
             field2: 42,
             binary_data: ByteBuf::from(vec![0, 1, 2, 3]), // Example binary data
-            // Set other fields as needed
+                                                          // Set other fields as needed
         };
 
         // Serialize the checkpoint using MessagePack
@@ -119,7 +119,6 @@ impl<D> PartialViewDataStorage<D>
     }
 }
 
-
 //We've added a binary_data field to the CheckpointData struct, which is an example of binary data serialized using the serde_bytes::ByteBuf type.
 
 //We've used the rmp_serde crate to serialize and deserialize the CheckpointData struct using MessagePack format.
@@ -127,3 +126,53 @@ impl<D> PartialViewDataStorage<D>
 //The save_checkpoint method now serializes the CheckpointData struct into MessagePack format and saves it to the database.
 
 //The load_checkpoint method loads the MessagePack data from the database and deserializes it into a CheckpointData struct.
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use eyre::Result;
+    use std::sync::Arc;
+    use tokio::sync::RwLock;
+
+    #[tokio::test]
+    async fn test_temporary_db() -> Result<()> {
+        let mut db = TemporaryDB::new();
+
+        // Test save_checkpoint
+        let checkpoint_data = CheckpointData {
+            field1: "Test".to_string(),
+            field2: 123,
+            binary_data: ByteBuf::from(vec![0, 1, 2, 3]),
+        };
+        db.save_checkpoint(checkpoint_data.clone())?;
+
+        // Test load_checkpoint
+        let loaded_checkpoint = db.load_checkpoint()?;
+        assert_eq!(loaded_checkpoint.field1, checkpoint_data.field1);
+        assert_eq!(loaded_checkpoint.field2, checkpoint_data.field2);
+        assert_eq!(loaded_checkpoint.binary_data, checkpoint_data.binary_data);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_partial_view_data_storage() -> Result<()> {
+        let db = TemporaryDB::new();
+        let mut storage = PartialViewDataStorage::new(10, db)?;
+
+        // Test save_checkpoint
+        let checkpoint_data = CheckpointData {
+            field1: "Test".to_string(),
+            field2: 123,
+            binary_data: ByteBuf::from(vec![0, 1, 2, 3]),
+        };
+        storage.save_checkpoint(checkpoint_data.clone())?;
+
+        // Test load_checkpoint
+        let loaded_checkpoint = storage.load_checkpoint()?;
+        assert_eq!(loaded_checkpoint.field1, checkpoint_data.field1);
+        assert_eq!(loaded_checkpoint.field2, checkpoint_data.field2);
+        assert_eq!(loaded_checkpoint.binary_data, checkpoint_data.binary_data);
+
+        Ok(())
+    }
+}

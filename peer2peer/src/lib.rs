@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use tokio::net::{TcpListener, TcpStream};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::net::{TcpListener, TcpStream};
 
 // Placeholder for Axiom ZK usage
 mod axiom_zk {
@@ -20,7 +20,9 @@ struct ZkProofMessage {
 
 #[tokio::main]
 async fn main() {
-    let listener = TcpListener::bind("127.0.0.1:8080").await.expect("Failed to bind");
+    let listener = TcpListener::bind("127.0.0.1:8080")
+        .await
+        .expect("Failed to bind");
 
     while let Ok((socket, _)) = listener.accept().await {
         tokio::spawn(handle_connection(socket));
@@ -59,7 +61,6 @@ async fn handle_connection(mut socket: TcpStream) {
         Err(e) => eprintln!("Failed to read from socket: {}", e),
     }
 }
-
 
 #[cfg(test)]
 mod tests {
