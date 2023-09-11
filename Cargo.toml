@@ -8,7 +8,9 @@ members = [
     "helios/consensus",
     "helios/execution",
     "helios/helios-ts",
-    "peer2peer"
+    "helios/partial_view",
+    "peer2peer",
+    "helios",
 ]
 
 default-members = ["helios/cli",]
