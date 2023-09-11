@@ -1,22 +1,15 @@
-use client::ClientBuilder;
-use common::types::BlockTag;
-use config::networks::Network;
-use consensus::database::Database;
-// use config::Network;
 use config::Config;
+use consensus::database::Database;
 use ethers::types::{Address, U256};
 use eyre::{Report, Result};
-use rmp_serde::{Deserializer, Serializer};
+use rmp_serde::Serializer;
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
 use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
-use std::str::FromStr;
-use std::sync::Arc;
-use tokio::sync::RwLock;
-// Import serde_bytes for binary data serialization
 
-#[derive(Serialize, Deserialize)]
+// It looks like Checkpoints are sent to the Partial Data view and this is serialised with rmp_serde
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct CheckpointData {
     field1: String,
     field2: u32,
@@ -36,6 +29,7 @@ impl TemporaryDB {
     }
 }
 
+// TODD: Implemnt these traits properly. They are mostly no ops right now.
 impl Database for TemporaryDB {
     fn new(_config: &Config) -> Result<Self> {
         Ok(Self::default())
@@ -45,6 +39,7 @@ impl Database for TemporaryDB {
     // see consensus/database.rs
 
     fn load_checkpoint(&self) -> Result<Vec<u8>, Report> {
+        // let db = TemporaryDB::new;
         if let Some(checkpoint) = self.checkpoint.borrow().as_ref() {
             let serialized =
                 rmp_serde::to_vec(checkpoint).map_err(|e| eyre::eyre!(e.to_string()))?;
@@ -79,15 +74,13 @@ where
     D: Database,
 {
     pub fn new(max_queue_capacity: usize, database: D) -> Result<Self> {
-        let mut storage = PartialViewDataStorage {
+        let storage = PartialViewDataStorage {
             partial_view_data: HashMap::new(),
             address_queue: VecDeque::new(),
             max_queue_capacity,
             database,
         };
 
-        // Load the checkpoint from the database during initialization
-        storage.load_checkpoint()?;
 
         Ok(storage)
     }
@@ -101,28 +94,19 @@ where
         unimplemented!();
     }
 
-    fn load_checkpoint(&mut self) -> Result<()> {
+    fn load_checkpoint(&mut self) -> Result<CheckpointData, Report> {
         let checkpoint_bytes: Vec<u8> = self.database.load_checkpoint()?;
         let checkpoint: CheckpointData =
             rmp_serde::from_slice(&checkpoint_bytes).map_err(|e| eyre::eyre!(e.to_string()))?;
-        Ok(())
+
+        Ok(checkpoint)
     }
 
-    fn save_checkpoint(&self, checkpoint: &[u8]) -> Result<()> {
-        // Create a checkpoint struct with your data
-        // let checkpoint = CheckpointData {
-        //     field1: "SomeData".to_string(),
-        //     field2: 42,
-        //     binary_data: ByteBuf::from(vec![0, 1, 2, 3]), // Example binary data
-        //                                                   // Set other fields as needed
-        // };
-        let checkpoint_data =
-            rmp_serde::from_slice(checkpoint).map_err(|e| eyre::eyre!(e.to_string()))?;
-
-        // Serialize the checkpoint using MessagePack
+    fn save_checkpoint(&self, checkpoint: CheckpointData) -> Result<()> {
         let mut buffer = Vec::new();
-        let mut serializer = Serializer::new(&mut buffer);
-        checkpoint.serialize(&mut serializer)?;
+        checkpoint
+            .serialize(&mut Serializer::new(&mut buffer))
+            .unwrap();
 
         // Save the serialized checkpoint to the database
         self.database.save_checkpoint(&buffer)?;
@@ -138,52 +122,51 @@ where
 //The save_checkpoint method now serializes the CheckpointData struct into MessagePack format and saves it to the database.
 
 //The load_checkpoint method loads the MessagePack data from the database and deserializes it into a CheckpointData struct.
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use eyre::Result;
-    use std::sync::Arc;
-    use tokio::sync::RwLock;
+    use serde_bytes::ByteBuf;
 
-    #[tokio::test]
-    async fn test_temporary_db() -> Result<()> {
-        let mut db = TemporaryDB::new();
+    #[test]
+    fn test_temporary_db() -> Result<()> {
+        let temp_db = TemporaryDB::new();
 
         // Test save_checkpoint
         let checkpoint_data = CheckpointData {
             field1: "Test".to_string(),
-            field2: 123,
+            field2: 42,
             binary_data: ByteBuf::from(vec![0, 1, 2, 3]),
         };
-        db.save_checkpoint(checkpoint_data.clone())?;
+        let serialized = rmp_serde::to_vec(&checkpoint_data)?;
+        temp_db.save_checkpoint(&serialized)?;
 
         // Test load_checkpoint
-        let loaded_checkpoint = db.load_checkpoint()?;
-        assert_eq!(loaded_checkpoint.field1, checkpoint_data.field1);
-        assert_eq!(loaded_checkpoint.field2, checkpoint_data.field2);
-        assert_eq!(loaded_checkpoint.binary_data, checkpoint_data.binary_data);
+        let loaded = temp_db.load_checkpoint()?;
+        assert_eq!(serialized, loaded);
 
         Ok(())
     }
 
-    #[tokio::test]
-    async fn test_partial_view_data_storage() -> Result<()> {
-        let db = TemporaryDB::new();
-        let mut storage = PartialViewDataStorage::new(10, db)?;
+    #[test]
+    fn test_partial_view_data_storage() -> Result<()> {
+        let temp_db = TemporaryDB::new();
+        let mut storage = PartialViewDataStorage::new(10, temp_db)?;
 
         // Test save_checkpoint
         let checkpoint_data = CheckpointData {
             field1: "Test".to_string(),
-            field2: 123,
+            field2: 42,
             binary_data: ByteBuf::from(vec![0, 1, 2, 3]),
         };
-        storage.save_checkpoint()?;
+        storage.save_checkpoint(checkpoint_data.clone())?;
 
         // Test load_checkpoint
-        let loaded_checkpoint = storage.load_checkpoint()?;
-        assert_eq!(loaded_checkpoint.field1, checkpoint_data.field1);
-        assert_eq!(loaded_checkpoint.field2, checkpoint_data.field2);
-        assert_eq!(loaded_checkpoint.binary_data, checkpoint_data.binary_data);
+        storage.load_checkpoint()?;
+        let loaded = storage.database.load_checkpoint()?;
+        let deserialized: CheckpointData = rmp_serde::from_slice(&loaded)?;
+        assert_eq!(checkpoint_data, deserialized);
 
         Ok(())
     }
