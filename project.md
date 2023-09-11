@@ -61,9 +61,14 @@ Including the entire contract state within each transaction poses a scalability 
 What does success look like? Describe the end goal of the project, scope, state and impact for the project to be considered finished and successful.
 
 ## Collaborators
+Sogol Malek
+Luke 
+Samuel Dare
+Elvis
 
 ### Fellows 
-
+Sogol Malek
+Lucke 
 Are there any fellows working with you on this project? 
 
 ### Mentors
@@ -74,3 +79,4 @@ Which mentors are helping you with the project?
 https://github.com/sogolmalek/EIP-x
 https://docs.google.com/presentation/d/1ExNviOulPM8bsnMS-EuvFbH8hLpWNltiqaxjm2jSZd0/edit?usp=sharing
 https://ethresear.ch/t/proposing-stateless-light-client-as-the-foundation-for-stateless-account-abstraction/15901?u=sogolmalek&trk=feed_main-feed-card_feed-article-content
+https://ethresear.ch/t/efficient-stateless-ethereum-execution/16480
