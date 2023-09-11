@@ -61,8 +61,13 @@ Including the entire contract state within each transaction poses a scalability 
 What does success look like? Describe the end goal of the project, scope, state and impact for the project to be considered finished and successful.
 
 ## Collaborators
-
+Sogol Malek,
+Luke Schoen, 
+Samuel Dare, 
+Elvis Sabanovic
 ### Fellows 
+Sogol Malek (EPF)
+Luke Schoen (EPF)
 
 Are there any fellows working with you on this project? 
 
