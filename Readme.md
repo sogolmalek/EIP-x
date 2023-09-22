@@ -83,3 +83,12 @@ https://github.com/sogolmalek/EIP-x
 https://github.com/ltfschoen/axiom-quickstart#docker-setup
 
 https://docs.google.com/presentation/d/1heCbSH1Mj1oG0aPamk0yQ5Mo9sLJfAmt71lzBe-0-C4/edit?usp=drive_link
+
+## Contributing
+
+Please add external eip-x repositories as Git Submodules with:
+```
+git submodule add --force <repository_link>
+git submodule init
+git submodule update
+```
