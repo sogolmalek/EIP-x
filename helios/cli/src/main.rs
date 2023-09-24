@@ -16,31 +16,35 @@ use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
 use futures::executor::block_on;
 use log::{error, info};
-use ethers::{
-    core::types::{Block, Transaction, TransactionReceipt, H256, Address},
-    providers::{Http, Middleware, Provider},
-    signers::Wallet,
-    trie::{MerklePatriciaTrie, Trie},
-};
+
+use ethers::providers::{Http, Middleware, Provider};
+use ethers::types::BlockId;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-//sogol addded: 
-    // Initialize the Ethereum provider URL and address public key from environment variables
-    let provider_url = std::env::var("PROVIDER_URI").unwrap_or_else(|_| "http://127.0.0.1:8545".to_string());
-    let public_key = std::env::var("ETHEREUM_ADDRESS_PUBLIC_KEY").expect("ETHEREUM_ADDRESS_PUBLIC_KEY not set");
+    let provider = Provider::<Http>::try_from("http://localhost:8545")?;
 
-   
-    let config = get_config();
+    let block_number = 12345;
+    let block = provider
+        .get_block_with_txs(BlockId::Number(block_number.into()))
+        .await?;
 
-    // Define your target addresses here
-    // We shouldnt need this any, as we pass the addresses as optional flags in the cli
-    // let target_addresses = vec![
-    //     Address::from_str("0xYourTargetAddress1").unwrap(),
-    //     Address::from_str("0xYourTargetAddress2").unwrap(),
-    // ];
+    let block = match block {
+        Some(block) => block,
+        None => return Err("Block not found".into()),
+    };
 
+    let addresses = block
+        .transactions
+        .iter()
+        .map(|tx| {
+            let from = tx.from;
+            let to = tx.to;
+            vec![from, to.unwrap_or_default()]
+        })
+        .flatten()
+        .collect::<Vec<_>>();
 
     // Create the Helios client with the specified target addresses
     let mut client = match ClientBuilder::new().config(config).build() {
@@ -100,19 +104,7 @@ fn get_config() -> Config {
 
     Config::from_file(&config_path, &cli.network, &cli_config)
 }
-//sogol added:
-// Fetch the block data, including the state root
-let block_number_to_fetch = 12345; // Replace with the desired block number
-let block_data = fetch_block_data(&provider_url, block_number_to_fetch).await?;
-
-// Iterate through accounts and fetch their state roots
-for account_address in get_all_accounts(&block_data.state_root) {
-    let state_root = fetch_state_root(&block_data.state_root, &account_address).await?;
-    // Process or store the state root as needed
-    println!("Account: {:?}, State Root: {:?}", account_address, state_root);
-}
-
-
+/
 #[derive(Parser)]
 #[clap(version, about)]
 /// Helios is a fast, secure, and portable light client for Ethereum
