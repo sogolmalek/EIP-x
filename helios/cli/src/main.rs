@@ -16,17 +16,24 @@ use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
 use futures::executor::block_on;
 use log::{error, info};
-use ethers::providers::{Http, Middleware, Provider};
-use ethers::types::BlockId;
+use ethers::{
+    core::types::{Block, Transaction, TransactionReceipt, H256, Address},
+    providers::{Http, Middleware, Provider},
+    signers::Wallet,
+    trie::{MerklePatriciaTrie, Trie},
+};
 
 #[tokio::main]
 async fn main() -> Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-    //sogol addded:
+//sogol addded: 
     // Initialize the Ethereum provider URL and address public key from environment variables
-    let provider_url =
-        std::env::var("PROVIDER_URI").unwrap_or_else(|_| "http://127.0.0.1:8545".to_string());
-    let provider = Provider::<Http>::try_from(provider_url)?;
+    let provider_url = std::env::var("PROVIDER_URI").unwrap_or_else(|_| "http://127.0.0.1:8545".to_string());
+    // let public_key = std::env::var("ETHEREUM_ADDRESS_PUBLIC_KEY").expect("ETHEREUM_ADDRESS_PUBLIC_KEY not set");
+
+    let provider = Provider::<Http>::try_from(
+        provider_url,
+    )?;
 
     let block_number = 9751182;
     let block = provider
@@ -35,7 +42,7 @@ async fn main() -> Result<()> {
 
     let block = match block {
         Some(block) => block,
-        None => return Err(eyre::eyre!("Block not found")),
+        None => return Err("Block not found".into()),
     };
 
     let addresses = block
@@ -53,8 +60,16 @@ async fn main() -> Result<()> {
         "Addresses: {:?}, State root: {:?}",
         addresses, block.state_root
     );
-
+   
     let config = get_config();
+
+    // Define your target addresses here
+    // We shouldnt need this any, as we pass the addresses as optional flags in the cli
+    // let target_addresses = vec![
+    //     Address::from_str("0xYourTargetAddress1").unwrap(),
+    //     Address::from_str("0xYourTargetAddress2").unwrap(),
+    // ];
+
 
     // Create the Helios client with the specified target addresses
     let mut client = match ClientBuilder::new().config(config).build() {
@@ -125,6 +140,7 @@ fn get_config() -> Config {
 //     // Process or store the state root as needed
 //     println!("Account: {:?}, State Root: {:?}", account_address, state_root);
 // }
+
 
 #[derive(Parser)]
 #[clap(version, about)]

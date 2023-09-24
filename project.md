@@ -1,81 +1,71 @@
-# Project 
 
-Stateless Account abstraction that scales Ethereum 
+##EIP-x 
+ Stateless LC That Consumes ZKP With Efficient Access To The Specific Segments Of The State.
+
 
 ## Motivation
+In the dynamic landscape of blockchain technology, addressing the limitations of traditional light clients is paramount for the widespread adoption and efficient functioning of the Ethereum network. Conventionally, light clients have burdened full nodes by incrementally requesting block state, posing challenges to network scalability. The integration of Verkle trees has provided a significant step forward, facilitating smoother transitions for lightweight clients between blocks. However, a lingering concern lies in the assurance of accurate state root confirmation, highlighting the need for further advancements. The inability of light clients to handle zero-knowledge proofs compounds the complexity. Moreover, portal nodes, a crucial bridge in this ecosystem, face the challenge of effectively prioritizing essential information for streamlined and swift stateless light client operations. Overcoming these obstacles is central to empowering light clients and optimizing the Ethereum network for a seamless and inclusive decentralized future.
 
-Stateless Account Abstraction (SAA) proposes to tackle several key problems within the Ethereum network, presenting potential solutions and improvements.
-1. Scalability: The current Ethereum network faces scalability challenges due to the inclusion of full state information in every transaction. This approach restricts the number of transactions that can be processed within a given time, resulting in network congestion and higher fees. SAA aims to improve scalability by separating the execution context from the state information, enabling parallel processing of transactions and increasing transaction throughput.
+# Project Description
+Project Description:
 
-2. Storage Requirements: Storing the complete state of every account on the blockchain consumes significant storage resources. As the Ethereum network grows, the storage demands become increasingly burdensome. SAA proposes a more efficient storage model by shifting the responsibility of providing the execution context to the transaction sender or external storage networks. This reduces the on-chain storage requirements, making the network more scalable and cost-effective.
+Our endeavor,EIP-x, embodies a thoughtful exploration of Helios light clients' capabilities to transform the way we access and validate blockchain data. At its core, the State Provider entity operates as a conduit to access the most recent block state of a block in a manner that fosters trust without reliance on intermediaries. This process entails the extraction of a cryptographic witness, which in turn serves as the foundation for the creation of zero-knowledge proofs (ZKPs). These ZKPs, integral to our approach, are subsequently disseminated to all participating lightweight client (LC) nodes across the network.
 
-3. Cost Efficiency: The current design of Ethereum can be costly for users, as each transaction must include the full state information. This approach results in higher gas fees, making it less feasible for users to interact with smart contracts. SAA introduces stateless transactions, which are lighter in terms of storage requirements and gas costs. By reducing the overhead associated with transaction execution, SAA aims to make Ethereum more cost-efficient for users and developers.
+In the context of the Portal Network, Our approach centers on empowering Trin clients to efficiently incorporate ZKPs into their operations, coupled with the implementation of a dedicated cache mechanism. This cache mechanism offers the flexibility to select portions of proofs that align with individual requirements, thereby optimizing the overall performance.
 
-4. Developer Experience: The current stateful account model in Ethereum poses challenges for developers, as they need to consider the state information of accounts while designing and executing transactions. This complexity can hinder the development process and introduce potential security risks. SAA simplifies the development process by decoupling the execution context from the transaction, enabling developers to focus on transaction logic without being concerned about the full state information of accounts.
-
-5. Network Interoperability: With the introduction of SAA, Ethereum can potentially improve its interoperability with external systems and blockchains. By utilizing decentralized storage networks for retrieving execution contexts, Ethereum can leverage existing infrastructure and protocols. This opens up possibilities for cross-chain communication and integration with other blockchain networks, promoting a more interconnected and vibrant ecosystem.
-
-
-## Project description
-Stateless Account Abstraction is proposed as a solution to tackle these problems by decoupling the on-chain state from verification and execution.  
-
-## Specification
-
-Enhancing Stateless Account Abstraction in Ethereum: Introducing Xtreamly, the revolutionary proposal for stateless account abstraction without altering the consensus-layer protocol.
-
-Stateless AA, separates state from validation and execution logic. In such a scenario, users may not need to provide explicit state information to participate in an altrnative mempool. Instead, their transactions could be verified based on other criteria, such as cryptographic proofs and witness. To handle the state for transactions in the mempool without relying on explicit state information, a lightweight proxy smart contract can be integrated with an ASVC (aggregatable subvector commitment) scheme for more efficient, succinct and  cheaper.. 
-It receives the user's transaction, along with any required cryptographic proofs or witnesses, and submits it to the network for validation and execution. Instead of storing the entire state, It receives the user's transaction, along with any required cryptographic proofs or witnesses, and submits it to the network for validation and execution.The proxy smart contract itself does not contain the complete state information but only holds the necessary data to facilitate the transaction. Once the transaction is validated by the network, the proxy smart contract can update its internal state or interact with other contracts accordingly.
-
-By combining cryptographic proofs, witnesses, and the lightweight proxy smart contract, the system can verify transactions in the mempool without relying on explicit state information from users, improving efficiency and scalability. Once the transaction is validated by the network, the proxy smart contract can update its internal state or interact with other contracts accordingly.
-
-By using a lightweight proxy smart contract in this manner, the burden of maintaining and providing explicit state information is shifted away from the user, making participation in the mempool more accessible. It also allows for a more efficient and scalable validation process, as the network can focus on verifying the transaction based on the provided criteria rather than processing the entire state for each transaction.
-
-##Unique Goals of Stateless Account Abstraction 
-
-Atomic Swap between multiple parties
-Network abstraction
-Gas abstraction
-Signature abstraction
-Scalability
-Reduced storage requirements
-Simplified network synchronization
-Allows Batching transactions
-
+The collaboration between the State Provider and stateless LC consuming zkp within the Portal Network establishes a dynamic partnership, fostering robust data validation. In cases where cache-related inconsistencies or failures may surface, participants can confidently resort to the ZK proofs of the latest state. These cryptographic proofs serve as a dependable means to verify the integrity of cached data fragments, reinforcing trust and reliability within the system. The State Provider project endeavors to significantly enhance the efficiency, security, and accessibility of blockchain data for stateless light clients, contributing to the ongoing evolution of decentralized technologies.
 
 ## Roadmap
-
-What is your proposed timeline? Outline parts of the project and insight on how much time it will take to execute them.
-
-## Possible challenges
-
-Challenge 1: Storing and Verifying Contract State in a Stateless Setting
-moving funds and the execution of contract code of smart contracts in a stateless setting,  depends on the accurate and up-to-date contract state.
-Challenge 2: Responsibility for Storing Contract State:
-determining who should be responsible for storing the contract state becomes crucial because any client being able to submit transactions triggering contract executions,So we need to ensure the availability and integrity of the contract state.
-Challenge 3: Avoiding Inclusion of Large Contract State in Transactions
-Including the entire contract state within each transaction poses a scalability issue. Some contract states can be excessively large, leading to bloated transactions, increased storage costs, and slower transaction processing times. 
+POC of the eniter EIP-X 
+testing 
+evovling the implement5ation to improve the capabilites 
 
 
 ## Goal of the project
 
-What does success look like? Describe the end goal of the project, scope, state and impact for the project to be considered finished and successful.
+##Important Use-case1: 
+Being stateless Node for Flashbot
+Problem: 
+Flashbots' 0 gas price transactions, paying miners via smart contracts, risk a Denial-of-Service (DOS) vector. Miners must simulate transactions to assess profitability, making them vulnerable to spam attacks without cost. This differs from regular Ethereum transactions with inherent fees and node-based mempool filtering.
+
+Potential Solution with EIP-X: Stateless clients, which can consume  zkps, have the potential to mitigate the problem above
+
+1. Efficient Profitability Validation: They enable miners to determine transaction profitability using zkps, reducing resource consumption.Since zkps can verify transaction validity without executing them, miners can filter out spammy transactions more effectively, as they can identify them without the need for costly simulation.
+
+2. Protection from Spam:Stateless nodes can defend against spam by verifying transaction validity without execution, enhancing spam filtering.
+
+3. Privacy and Permissionlessness: They maintain privacy by validating transactions without revealing sensitive data and achieve permissionlessness in Flashbots transactions.
+
+##Important Use-case 2: 
+Being stateless Relayer for Flashbot
+
+Problem: 
+In the Flashbot ecosystem, the absence of costs for failed bids allows for potential network spam via invalid bundles, leading to denial of service (DoS) threats. Malicious actors can send miners invalid bundles, causing wasted computational resources. Relayers are crucial for DoS mitigation. Flashbots' mev-relay addresses this, but trust-based concerns exist. 
+
+
+Solution: 
+stateless light client with ZKPs to efficiently verify bundle validity and payment status, preventing invalid bundles from reaching miners and enhancing network security. Our EIP-x can solve Flashbot in three ways:
+
+1- according to the flow, relayer consumes the Ethereum state(what we provide is a fir here, zkp of last block state) 
+2- we can provide a zk of payment proof by bundlers if they have payed to the  miner : 1- it will reduce resource usage to compute if bundler has paid 
+3-preventing Relayers to have full access to the contents of all bundles and could easily reorder or steal or censor them!
+
+
 
 ## Collaborators
 Sogol Malek,
 Luke Schoen, 
 Samuel Dare, 
-Elvis Sabanovic
 ### Fellows 
 Sogol Malek (EPF)
 Luke Schoen (EPF)
 
-Are there any fellows working with you on this project? 
-
 ### Mentors
 
-Which mentors are helping you with the project? 
+Guilluame Ballet(Verkle)
+Sina Mahmoodi(Geth)
+Daniel Marzec (Flashbot)
 
 ## Resources
 https://github.com/sogolmalek/EIP-x
 https://docs.google.com/presentation/d/1ExNviOulPM8bsnMS-EuvFbH8hLpWNltiqaxjm2jSZd0/edit?usp=sharing
-https://ethresear.ch/t/proposing-stateless-light-client-as-the-foundation-for-stateless-account-abstraction/15901?u=sogolmalek&trk=feed_main-feed-card_feed-article-content
