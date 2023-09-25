@@ -1,10 +1,10 @@
 
 ##EIP-x 
- Stateless LC That Consumes ZKP With Efficient Access To The Specific Segments Of The State.
+ Stateless LC That Consumes ZKP 
 
 
 ## Motivation
-In the dynamic landscape of blockchain technology, addressing the limitations of traditional light clients is paramount for the widespread adoption and efficient functioning of the Ethereum network. Conventionally, light clients have burdened full nodes by incrementally requesting block state, posing challenges to network scalability. The integration of Verkle trees has provided a significant step forward, facilitating smoother transitions for lightweight clients between blocks. However, a lingering concern lies in the assurance of accurate state root confirmation, highlighting the need for further advancements. The inability of light clients to handle zero-knowledge proofs compounds the complexity. Moreover, portal nodes, a crucial bridge in this ecosystem, face the challenge of effectively prioritizing essential information for streamlined and swift stateless light client operations. Overcoming these obstacles is central to empowering light clients and optimizing the Ethereum network for a seamless and inclusive decentralized future.
+In the dynamic landscape of blockchain technology, addressing the limitations of traditional light clients is paramount for the widespread adoption and efficient functioning of the Ethereum network. Conventionally, light clients have burdened full nodes by incrementally requesting block state, posing challenges to network scalability. The integration of Verkle trees has provided a significant step forward, facilitating smoother transitions for lightweight clients between blocks. However, a lingering concern lies in the assurance of accurate state root confirmation, highlighting the need for further advancements. The inability of light clients to handle zero-knowledge proofs compounds the complexity. Overcoming these obstacles is central to empowering light clients and optimizing the Ethereum network for a seamless and inclusive decentralized future.
 
 # Project Description
 Project Description:
