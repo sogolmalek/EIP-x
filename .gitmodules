@@ -1,6 +1,6 @@
 [submodule "ethereum-proof"]
 	path = ethereum-proof
 	url = https://github.com/sogolmalek/ethereum-proof
-[submodule "axiom-quickstart"]
-	path = axiom-quickstart
-	url = https://github.com/ltfschoen/axiom-quickstart
+[submodule "axiom-dapp"]
+	path = axiom-dapp
+	url = https://github.com/clawbird/axiom-dapp
