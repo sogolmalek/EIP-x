@@ -1,16 +1,16 @@
 use std::net::IpAddr;
+use clap::Parser;
+use common::utils::hex_str_to_bytes;
+use dirs::home_dir;
+use env_logger::Env;
+use eyre::Result;
+use std::net::IpAddr;
 use std::{
     path::PathBuf,
     process::exit,
     str::FromStr,
     sync::{Arc, Mutex},
 };
-
-use clap::Parser;
-use common::utils::hex_str_to_bytes;
-use dirs::home_dir;
-use env_logger::Env;
-use eyre::Result;
 
 use client::{Client, ClientBuilder};
 use config::{CliConfig, Config};
@@ -30,6 +30,50 @@ async fn main() -> Result<()> {
     // Initialize the Ethereum provider URL and address public key from environment variables
     let provider_url = std::env::var("PROVIDER_URI").unwrap_or_else(|_| "http://127.0.0.1:8545".to_string());
     // let public_key = std::env::var("ETHEREUM_ADDRESS_PUBLIC_KEY").expect("ETHEREUM_ADDRESS_PUBLIC_KEY not set");
+       // Initialize the Ethereum provider URL from environment variable or use default
+       let provider = Provider::<Http>::try_from(provider_url)?;
+   
+       let block_number = 9751182; // Replace with the desired block number
+   
+       // Fetch all transactions within the specified block
+       let transactions = fetch_all_transactions(&provider, block_number).await?;
+   
+       let addresses = transactions.iter()
+           .filter_map(|tx| {
+               let from = tx.from;
+               let to = tx.to.unwrap_or_default();
+               if to.is_contract() {
+                   Some(to)
+               } else {
+                   Some(from)
+               }
+           })
+           .collect::<Vec<_>>();
+        println!(
+            "Addresses: {:?}, Number of Transactions: {}",
+            addresses,
+            transactions.len()
+        );
+    
+        let config = get_config();
+    
+        // Create the Helios client with the specified target addresses
+        let mut client = match ClientBuilder::new().config(config).build() {
+            Ok(client) => client,
+            Err(err) => {
+                error!("{}", err);
+                exit(1);
+            }
+        };
+    
+        if let Err(err) = client.start().await {
+            error!("{}", err);
+            exit(1);
+        }
+    
+        register_shutdown_handler(client);
+        std::future::pending().await
+    }
 
     let provider = Provider::<Http>::try_from(
         provider_url,
