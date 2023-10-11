@@ -70,10 +70,6 @@ async fn main() -> Result<()> {
             error!("{}", err);
             exit(1);
         }
-    
-        register_shutdown_handler(client);
-        std::future::pending().await
-    
 
     let provider = Provider::<Http>::try_from(
         provider_url,
