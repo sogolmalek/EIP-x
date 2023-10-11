@@ -54,6 +54,7 @@ async fn main() -> Result<()> {
             addresses,
             transactions.len()
         );
+    }
     
         let config = get_config();
     
@@ -73,7 +74,7 @@ async fn main() -> Result<()> {
     
         register_shutdown_handler(client);
         std::future::pending().await
-    }
+    
 
     let provider = Provider::<Http>::try_from(
         provider_url,
@@ -131,7 +132,7 @@ async fn main() -> Result<()> {
 
     register_shutdown_handler(client);
     std::future::pending().await
-}
+
 
 fn register_shutdown_handler(client: Client) {
     let client = Arc::new(client);
@@ -220,7 +221,7 @@ impl Cli {
             .checkpoint
             .as_ref()
             .map(|c| hex_str_to_bytes(c).expect("invalid checkpoint"));
-
+}
         CliConfig {
             checkpoint,
             execution_rpc: self.execution_rpc.clone(),
@@ -244,4 +245,6 @@ impl Cli {
                 .join(format!(".helios/data/{}", self.network))
         }
     }
-}
+    register_shutdown_handler(client);
+    Ok(()) // Close the main function with Ok(()) to indicate successful execution
+                            
