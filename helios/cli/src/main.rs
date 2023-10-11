@@ -2,7 +2,7 @@ use clap::Parser;
 use common::utils::hex_str_to_bytes;
 use dirs::home_dir;
 use env_logger::Env;
-use eyre::Result;
+use eyre::{eyre, Result};
 use std::net::IpAddr;
 use std::{
     path::PathBuf,
@@ -81,7 +81,7 @@ async fn main() -> Result<()> {
 
     let block = match block {
         Some(block) => block,
-        None => return Err("Block not found".into()),
+        None => return Err(eyre!("Block not found")),
     };
 
     let addresses = block
