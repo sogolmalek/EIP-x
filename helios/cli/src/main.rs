@@ -1,4 +1,3 @@
-use std::net::IpAddr;
 use clap::Parser;
 use common::utils::hex_str_to_bytes;
 use dirs::home_dir;
@@ -17,10 +16,10 @@ use config::{CliConfig, Config};
 use futures::executor::block_on;
 use log::{error, info};
 use ethers::{
-    core::types::{Block, Transaction, TransactionReceipt, H256, Address},
+    core::types::{Block, BlockId, Transaction, TransactionReceipt, H256, Address},
     providers::{Http, Middleware, Provider},
     signers::Wallet,
-    trie::{MerklePatriciaTrie, Trie},
+    // trie::{MerklePatriciaTrie, Trie},
 };
 
 #[tokio::main]
