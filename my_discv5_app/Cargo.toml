@@ -1,0 +1,13 @@
+[package]
+name = "my_discv5_app"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-std = "1.9"
+futures = "0.3"
+discv5 = "0.5"
+zkp_library = ""  # Replace with the actual ZKP library version
+helios_light_client = ""  # Replace with the actual Helios light client library version

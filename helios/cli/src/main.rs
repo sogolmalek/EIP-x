@@ -180,7 +180,7 @@ fn get_config() -> Config {
 // }
 
 async fn fetch_all_transactions(provider:Provider<Http>, blocknumber:i32)->Vec<Transaction> {
-    let blockwithtransactions=(provider.get_block_with_txs(12).await).unwrap().unwrap();
+    let blockwithtransactions=(provider.get_block(12).await).unwrap().unwrap();
     let transactions = blockwithtransactions.transactions;
     return transactions;
 
