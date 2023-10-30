@@ -8,6 +8,8 @@ Node Discovery: The code establishes connections with Ethereum nodes and sends F
 ZKP Integration: It allows you to include ZKP messages in FINDNODE requests. ZKP messages can be retrieved from Helios nodes.
 
 Configuration: The code is configurable with options such as local ENR setup, bootnodes, and request parameters.
+30-oc-2023: 
+implemented a loop that periodically sends FINDNODE requests to the connected nodes.adjusted the sleep duration to 10 milliseconds, you can use the tokio library, which provides more fine-grained control over asynchronous tasks and timers
 
 Possible modifications needed for flashbots: 
 In the context of Flashbots, a protocol designed to address the issue of MEV  in Ethereum transactions, this Rust code could be adapted for a unique use case. It could facilitate communication with Flashbots relay services.
