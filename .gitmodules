@@ -4,6 +4,4 @@
 [submodule "helios"]
 	path = helios
 	url = https://github.com/sogolmalek/helios
-[submodule "axiom-dapp"]
-	path = axiom-dapp
-	url = https://github.com/clawbird/axiom-dapp
+

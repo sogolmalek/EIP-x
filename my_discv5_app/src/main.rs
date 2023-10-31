@@ -56,7 +56,7 @@ async fn periodic_findnode_requests(
 
 fn main() {
     task::block_on(async {
-        // Generate your local ENR and configure Node Discovery
+        // Generate  local ENR and configure Node Discovery
         let local_key = CombinedKey::generate_secp256k1();
         let local_enr = local_key.generate_enr().unwrap();
 
@@ -78,7 +78,7 @@ fn main() {
         // Example ZKP message
         let zkp_message = b"Sample ZKP message";
 
-        // Replace with your actual list of connected Ethereum nodes
+        // Replace with actual list of connected Ethereum nodes
         let connected_nodes: Vec<NodeRecord> = vec![
             // NodeRecord 1
             NodeRecord::new(
