@@ -1,7 +1,7 @@
-[submodule "ethereum-proof"]
-	path = ethereum-proof
-	url = https://github.com/sogolmalek/ethereum-proof
 [submodule "helios"]
 	path = helios
 	url = https://github.com/sogolmalek/helios
+[submodule "trin"]
+	path = trin
+	url = https://github.com/sogolmalek/trin/
 
