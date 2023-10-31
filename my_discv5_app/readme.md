@@ -1,6 +1,6 @@
 ##DRAFT CODE!
 
-This Rust code is designed based on RLPX communication protocol to interact with Ethereum nodes using the Ethereum Node Discovery Protocol (Discv5). It aims to discover Ethereum nodes, send FINDNODE requests, and includes the ability to append Zero-Knowledge Proof (ZKP) messages to these requests.
+This Rust code is designed based on RLPX communication protocol to interact with Ethereum nodes using the Ethereum Node Discovery Protocol (Discv5).this protocol allows peers to exchange zkp of recent state, allowing peers to verify account and storage data without having to download intermediate Merkle trie nodes. It aims to discover Ethereum nodes, send FINDNODE requests, and includes the ability to append Zero-Knowledge Proof (ZKP) messages to these requests.
 
 Features
 Node Discovery: The code establishes connections with Ethereum nodes and sends FINDNODE requests to discover peers.
