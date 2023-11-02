@@ -55,7 +55,7 @@ stateless light client with ZKPs to efficiently verify bundle validity and payme
 ## Collaborators
 Sogol Malek,
 Luke Schoen, 
-Samuel Dare, 
+Mohammadreza Nakhle
 ### Fellows 
 Sogol Malek (EPF)
 Luke Schoen (EPF)
