@@ -1,158 +1,137 @@
 use async_std::task;
 use async_std::stream::StreamExt;
-use discv5::{NodeDiscovery, NodeRecord, CombinedKey, CombinedKeyExt, Config, Discv5Error};
+use async_std::sync::{Arc, Mutex};
+use discv5::{Discv5, Discv5Config, Discv5Event, NodeQueryConfig, QueryId};
+use discv5::enr::{CombinedKey, Enr, NodeId};
 use std::net::{SocketAddr, Ipv4Addr};
 use std::time::Duration;
 use rand::Rng;
-use rlp::{self, RlpStream};
-use rlp_derive::{Decodable, Encodable};
-use rlpx::{SecioKey, Endpoint, Protocol, SecioCodec, RemoteId, Frame};
-use discv5::enr::{CombinedKey, Enr};
+use tokio::time::interval;
+use tokio::sync::mpsc;
 
-// Define a new enum for different message types, including the ZKP message
+// Improved ZKP structure
+#[derive(Debug, Clone, PartialEq, Eq, Encodable, Decodable)]
+struct ZeroKnowledgeProof {
+    // Add fields for your specific ZKP message structure
+    data: Vec<u8>,
+}
+
+// Enum representing different message types
 #[derive(Debug, Clone, PartialEq, Eq, Encodable, Decodable)]
 enum MessageType {
-    FindNodeRequest(Vec<u8>),
-    ZkpMessage(Vec<u8>),
+    FindNodeRequest(Vec<u8>, Option<ZeroKnowledgeProof>),
+    ZeroKnowledgeMessage(ZeroKnowledgeProof),
     // Add other message types as needed
 }
 
-// Function to send a FindNode request with an appended ZKP message
-async fn send_findnode_request(
-    node_discovery: &NodeDiscovery,
-    node: &NodeRecord,
-    zkp_message: &[u8],
-) -> Result<(), Discv5Error> {
-    let request_id: [u8; 8] = rand::random();
-    let distances = vec![0, 1, 2];
-
-    let request = node_discovery.findnode(request_id, distances)?;
-    let address = node.udp_socket().unwrap().local_addr().unwrap();
-    let request_with_payload = MessageType::FindNodeRequest((request, zkp_message.to_vec()));
-
-    send_message(&address, &request_with_payload).await
-}
-
-// Function to send a generic message over RLPx
-async fn send_message(address: &SocketAddr, message: &MessageType) -> Result<(), Discv5Error> {
-    // Encode the message using RLP
-    let encoded_message = rlp::encode(message);
-
-    // Set up RLPx connection
-    let mut endpoint = Endpoint::new();
-    endpoint.set_id(RemoteId::default());
-    endpoint.set_key(SecioKey::new_temp().unwrap());
-
-    // Simulate RLPx communication by sending the encoded message
-    let frame = Frame::Data(encoded_message);
-    endpoint.write(frame).unwrap();
-
-    Ok(())
-}
-
-// Function to simulate RLPx session setup
-fn setup_rlp_session() {
-    // Generate temporary SecioKey for encryption
-    let secio_key = SecioKey::new_temp().unwrap();
-
-    // Set up RLPx Endpoint
-    let mut endpoint = Endpoint::new();
-    endpoint.set_id(secio_key.local_id().clone());
-    endpoint.set_key(secio_key);
-
-    // Start the RLPx handshake
-    let handshake_frame = endpoint.initiate_handshake();
-    endpoint.write(handshake_frame).unwrap();
-
-    // Simulate receiving the handshake response from the other party
-    let response_frame = /* Replace this with actual logic to receive the response */;
-    match endpoint.read(response_frame) {
-        Ok(Frame::HandshakeResponse) => {
-            // Handshake successful, exchange supported protocols
-            let supported_protocols = vec!["your_protocol_version".to_string()];
-            let protocol_frame = Frame::ProtocolSelect(supported_protocols);
-            endpoint.write(protocol_frame).unwrap();
-
-            // Simulate receiving the protocol acknowledgment from the other party
-            let acknowledgment_frame = /* Replace this with actual logic */;
-            match endpoint.read(acknowledgment_frame) {
-                Ok(Frame::ProtocolAcknowledgment) => {
-                    // Now the RLPx session is set up with a successful handshake
-                    println!("RLPx session setup completed");
-                }
-                _ => eprintln!("Failed to receive protocol acknowledgment"),
-            }
-        }
-        _ => eprintln!("Failed to complete the handshake"),
+impl MessageType {
+    fn findnode_request(request_id: QueryId, distances: Vec<u64>, zkp_message: Option<ZeroKnowledgeProof>) -> Self {
+        MessageType::FindNodeRequest(rlp::encode(&request_id), zkp_message)
     }
 }
 
-// Main function
-fn main() {
-    task::block_on(async {
-        // Generate your local ENR and configure Node Discovery
-        let local_key = CombinedKey::generate_secp256k1();
-        let local_enr = local_key.generate_enr().unwrap();
+async fn send_findnode_request(
+    discv5: &Arc<Mutex<Discv5>>,
+    node_id: NodeId,
+    distances: Vec<u64>,
+    zkp_message: Option<ZeroKnowledgeProof>,
+) {
+    let request_id: QueryId = rand::random();
+    let request_data = MessageType::findnode_request(request_id, distances.clone(), zkp_message);
 
-        let config = Config {
-            local_key,
-            local_peer_id: local_enr.node_id(),
-            listen_address: Some("0.0.0.0:9000".parse::<SocketAddr>().unwrap()),
-            bootnodes: vec![
-                // Replace with actual bootnodes
-                SocketAddr::new(Ipv4Addr::new(1, 2, 3, 4), 30303),
-            ],
-            request_timeout: Duration::from_secs(5),
-            max_request_retries: 3,
-            ..Config::default()
-        };
+    // Use a custom configuration for this query
+    let config = NodeQueryConfig {
+        query_id: Some(request_id),
+        ..Default::default()
+    };
 
-        let mut node_discovery = NodeDiscovery::new(local_enr.clone(), config).unwrap();
+    discv5.lock().await.find_node(node_id, distances, config, Some(request_data)).await;
+}
 
-        // Setup RLPx session
-        setup_rlp_session();
-
-        // Example ZKP message
-        let zkp_message = b"Sample ZKP message";
-
-        // Replace with actual list of connected helios nodes
-        let node_id_1 = /* Actual Node ID for Helios 1 */;
-        let enr_1 = /* Actual ENR for Helios 1 */;
-        let ip_1 = "192.168.1.101".parse::<Ipv4Addr>().unwrap();
-        let port_1 = 30303;
-
-        let node_id_2 = /* Actual Node ID for Helios 2 */;
-        let enr_2 = /* Actual ENR for Helios 2 */;
-        let ip_2 = "192.168.1.102".parse::<Ipv4Addr>().unwrap();
-        let port_2 = 30304;
-
-        // Replace these placeholders with actual NodeRecord details
-        let node_record_1 = NodeRecord::new(node_id_1, enr_1, ip_1, port_1);
-        let node_record_2 = NodeRecord::new(node_id_2, enr_2, ip_2, port_2);
-
-        // Add more NodeRecords as needed
-        let connected_nodes: Vec<NodeRecord> = vec![
-            // NodeRecord 1
-            node_record_1,
-            // NodeRecord 2
-            node_record_2,
-            // Add more NodeRecords as needed
-        ];
-
-        for node in &connected_nodes {
-            match send_findnode_request(&node_discovery, node, zkp_message).await {
-                Ok(_) => {
-                    println!(
-                        "FINDNODE Request sent successfully to node: {:?}",
-                        node.udp_socket().unwrap().local_addr().unwrap()
-                    );
-                }
-                Err(err) => eprintln!(
-                    "Failed to send FINDNODE Request to node {:?}: {:?}",
-                    node.udp_socket().unwrap().local_addr().unwrap(),
-                    err
-                ),
+async fn handle_discv5_events(discv5: Arc<Mutex<Discv5>>, mut rx: mpsc::Receiver<MessageType>) {
+    while let Some(event) = discv5.lock().await.next().await {
+        match event {
+            Discv5Event::FindNodeResult { query_id, closer_nodes, .. } => {
+                println!(
+                    "Received FINDNODE result for query {:?}, closer nodes: {:?}",
+                    query_id, closer_nodes
+                );
+            }
+            _ => {
+                // Handle other discv5 events as needed
             }
         }
+    }
+}
+
+async fn handle_zkp_messages(discv5: Arc<Mutex<Discv5>>, mut rx: mpsc::Receiver<MessageType>) {
+    while let Some(message) = rx.recv().await {
+        match message {
+            MessageType::ZeroKnowledgeMessage(zkp) => {
+                // Handle ZKP messages, e.g., verify and process
+                println!("Received Zero Knowledge Proof message: {:?}", zkp);
+            }
+            _ => {
+                // Handle other message types as needed
+            }
+        }
+    }
+}
+
+fn main() {
+    task::block_on(async {
+        let local_key = CombinedKey::generate_secp256k1();
+        let local_enr = local_key.generate_enr().unwrap();
+        let local_node_id = local_enr.node_id();
+
+        let config = Discv5Config {
+            local_key,
+            listen_address: "0.0.0.0:9000".parse().unwrap(),
+            ..Default::default()
+        };
+
+        let discv5 = Arc::new(Mutex::new(Discv5::new(local_enr.clone(), config).unwrap()));
+
+        let (tx, rx) = mpsc::channel::<MessageType>(10);
+
+        // Spawn asynchronous tasks to handle events and messages
+        let discv5_clone = Arc::clone(&discv5);
+        let events_task = task::spawn(handle_discv5_events(discv5_clone, rx.clone()));
+
+        let discv5_clone = Arc::clone(&discv5);
+        let messages_task = task::spawn(handle_zkp_messages(discv5_clone, rx.clone()));
+
+        // Example ZKP message
+        let zkp_message = ZeroKnowledgeProof { data: b"Sample ZKP message".to_vec() };
+
+        // Replace with actual connected nodes
+        let node_id_1 = NodeId::random();
+        let node_id_2 = NodeId::random();
+
+        // Append ZKP messages to FINDNODE requests asynchronously
+        let discv5_clone = Arc::clone(&discv5);
+        let task1 = task::spawn(send_findnode_request(&discv5_clone, node_id_1, vec![0, 1, 2], Some(zkp_message.clone())));
+
+        let discv5_clone = Arc::clone(&discv5);
+        let task2 = task::spawn(send_findnode_request(&discv5_clone, node_id_2, vec![0, 1, 2], Some(zkp_message.clone())));
+
+        // Use Tokio's interval to periodically send ZKP messages
+        let mut interval = interval(Duration::from_secs(5));
+        let tx_clone = tx.clone();
+        let zkp_task = task::spawn(async move {
+            loop {
+                interval.tick().await;
+                tx_clone.send(MessageType::ZeroKnowledgeMessage(zkp_message.clone())).await.unwrap();
+            }
+        });
+
+        // Await completion of all tasks
+        task::try_join!(task1, task2, zkp_task).unwrap();
+
+        // Await completion of Discv5 event handling
+        events_task.await.unwrap();
+
+        // Await completion of message handling
+        messages_task.await.unwrap();
     });
 }

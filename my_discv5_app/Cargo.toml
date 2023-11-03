@@ -11,4 +11,13 @@ futures = "0.3"
 discv5 = "0.5"
 zkp_library = ""  # Replace with the actual ZKP library version
 helios_light_client = ""  # Replace with the actual Helios light client library version
-rlpx = "0.5.0"
+[dependencies]
+rand = "0.8.5"
+tokio = { version = "1", features = ["full"] }
+[dependencies.tokio]
+version = "1"
+features = ["full"]
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
