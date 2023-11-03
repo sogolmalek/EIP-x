@@ -7,11 +7,14 @@ use rand::Rng;
 use rlp::{self, RlpStream};
 use rlp_derive::{Decodable, Encodable};
 use rlpx::{SecioKey, Endpoint, Protocol, SecioCodec, RemoteId, Frame};
+use discv5::enr::{CombinedKey, Enr};
+
 
 // Define a new enum for different message types, including the ZKP message
 #[derive(Debug, Clone, PartialEq, Eq, Encodable, Decodable)]
 enum MessageType {
     FindNodeRequest(Vec<u8>),
+    ZkpMessage(vec<u8>),
     // Add other message types as needed
 }
 
@@ -26,7 +29,7 @@ async fn send_findnode_request(
 
     let request = node_discovery.findnode(request_id, distances)?;
     let address = node.udp_socket().unwrap().local_addr().unwrap();
-    let request_with_payload = MessageType::FindNodeRequest([request, zkp_message].concat());
+    let request_with_payload = MessageType::FindNodeRequest((request, zkp_message.to_vec()));
 
     send_message(&address, &request_with_payload).await
 }
@@ -42,7 +45,7 @@ async fn send_message(address: &SocketAddr, message: &MessageType) -> Result<(),
     endpoint.set_key(SecioKey::new_temp().unwrap());
 
     // Simulate RLPx communication by sending the encoded message
-    let frame = Frame::Data(encoded_message);
+    let frame = Frame::Data(message.encode());
     endpoint.write(frame).unwrap();
 
     Ok(())
@@ -82,7 +85,22 @@ fn main() {
         // Example ZKP message
         let zkp_message = b"Sample ZKP message";
 
-        // Replace with your actual list of connected Ethereum nodes
+          // Replace with  actual list of connected helios nodes
+          let node_id_1 = /* Actual Node ID for Helios 1 */;
+          let enr_1 = /* Actual ENR for Helios 1 */;
+          let ip_1 = "192.168.1.101".parse::<Ipv4Addr>().unwrap();
+          let port_1 = 30303;
+  
+          let node_id_2 = /* Actual Node ID for Helios 2 */;
+          let enr_2 = /* Actual ENR for Helios 2 */;
+          let ip_2 = "192.168.1.102".parse::<Ipv4Addr>().unwrap();
+          let port_2 = 30304;
+  
+          // Replace these placeholders with actual NodeRecord details
+          let node_record_1 = NodeRecord::new(node_id_1, enr_1, ip_1, port_1);
+          let node_record_2 = NodeRecord::new(node_id_2, enr_2, ip_2, port_2);
+  
+          // Add more NodeRecords as needed
         let connected_nodes: Vec<NodeRecord> = vec![
             // NodeRecord 1
             NodeRecord::new(
