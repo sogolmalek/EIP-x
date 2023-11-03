@@ -9,12 +9,11 @@ use rlp_derive::{Decodable, Encodable};
 use rlpx::{SecioKey, Endpoint, Protocol, SecioCodec, RemoteId, Frame};
 use discv5::enr::{CombinedKey, Enr};
 
-
 // Define a new enum for different message types, including the ZKP message
 #[derive(Debug, Clone, PartialEq, Eq, Encodable, Decodable)]
 enum MessageType {
     FindNodeRequest(Vec<u8>),
-    ZkpMessage(vec<u8>),
+    ZkpMessage(Vec<u8>),
     // Add other message types as needed
 }
 
@@ -45,7 +44,7 @@ async fn send_message(address: &SocketAddr, message: &MessageType) -> Result<(),
     endpoint.set_key(SecioKey::new_temp().unwrap());
 
     // Simulate RLPx communication by sending the encoded message
-    let frame = Frame::Data(message.encode());
+    let frame = Frame::Data(encoded_message);
     endpoint.write(frame).unwrap();
 
     Ok(())
@@ -53,8 +52,39 @@ async fn send_message(address: &SocketAddr, message: &MessageType) -> Result<(),
 
 // Function to simulate RLPx session setup
 fn setup_rlp_session() {
-    // Implement RLPx session setup logic here
-    println!("RLPx session setup completed");
+    // Generate temporary SecioKey for encryption
+    let secio_key = SecioKey::new_temp().unwrap();
+
+    // Set up RLPx Endpoint
+    let mut endpoint = Endpoint::new();
+    endpoint.set_id(secio_key.local_id().clone());
+    endpoint.set_key(secio_key);
+
+    // Start the RLPx handshake
+    let handshake_frame = endpoint.initiate_handshake();
+    endpoint.write(handshake_frame).unwrap();
+
+    // Simulate receiving the handshake response from the other party
+    let response_frame = /* Replace this with actual logic to receive the response */;
+    match endpoint.read(response_frame) {
+        Ok(Frame::HandshakeResponse) => {
+            // Handshake successful, exchange supported protocols
+            let supported_protocols = vec!["your_protocol_version".to_string()];
+            let protocol_frame = Frame::ProtocolSelect(supported_protocols);
+            endpoint.write(protocol_frame).unwrap();
+
+            // Simulate receiving the protocol acknowledgment from the other party
+            let acknowledgment_frame = /* Replace this with actual logic */;
+            match endpoint.read(acknowledgment_frame) {
+                Ok(Frame::ProtocolAcknowledgment) => {
+                    // Now the RLPx session is set up with a successful handshake
+                    println!("RLPx session setup completed");
+                }
+                _ => eprintln!("Failed to receive protocol acknowledgment"),
+            }
+        }
+        _ => eprintln!("Failed to complete the handshake"),
+    }
 }
 
 // Main function
@@ -85,33 +115,27 @@ fn main() {
         // Example ZKP message
         let zkp_message = b"Sample ZKP message";
 
-          // Replace with  actual list of connected helios nodes
-          let node_id_1 = /* Actual Node ID for Helios 1 */;
-          let enr_1 = /* Actual ENR for Helios 1 */;
-          let ip_1 = "192.168.1.101".parse::<Ipv4Addr>().unwrap();
-          let port_1 = 30303;
-  
-          let node_id_2 = /* Actual Node ID for Helios 2 */;
-          let enr_2 = /* Actual ENR for Helios 2 */;
-          let ip_2 = "192.168.1.102".parse::<Ipv4Addr>().unwrap();
-          let port_2 = 30304;
-  
-          // Replace these placeholders with actual NodeRecord details
-          let node_record_1 = NodeRecord::new(node_id_1, enr_1, ip_1, port_1);
-          let node_record_2 = NodeRecord::new(node_id_2, enr_2, ip_2, port_2);
-  
-          // Add more NodeRecords as needed
+        // Replace with actual list of connected helios nodes
+        let node_id_1 = /* Actual Node ID for Helios 1 */;
+        let enr_1 = /* Actual ENR for Helios 1 */;
+        let ip_1 = "192.168.1.101".parse::<Ipv4Addr>().unwrap();
+        let port_1 = 30303;
+
+        let node_id_2 = /* Actual Node ID for Helios 2 */;
+        let enr_2 = /* Actual ENR for Helios 2 */;
+        let ip_2 = "192.168.1.102".parse::<Ipv4Addr>().unwrap();
+        let port_2 = 30304;
+
+        // Replace these placeholders with actual NodeRecord details
+        let node_record_1 = NodeRecord::new(node_id_1, enr_1, ip_1, port_1);
+        let node_record_2 = NodeRecord::new(node_id_2, enr_2, ip_2, port_2);
+
+        // Add more NodeRecords as needed
         let connected_nodes: Vec<NodeRecord> = vec![
             // NodeRecord 1
-            NodeRecord::new(
-                // Replace with the actual NodeRecord details
-                // Example: Node ID, ENR, IP, Port, etc.
-            ),
+            node_record_1,
             // NodeRecord 2
-            NodeRecord::new(
-                // Replace with the actual NodeRecord details
-                // Example: Node ID, ENR, IP, Port, etc.
-            ),
+            node_record_2,
             // Add more NodeRecords as needed
         ];
 
