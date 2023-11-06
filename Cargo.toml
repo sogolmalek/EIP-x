@@ -9,7 +9,6 @@ members = [
     "helios/execution",
     "helios/helios-ts",
     "helios/partial_view",
-    "peer2peer",
     "helios",
 ]
 
