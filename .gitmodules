@@ -7,4 +7,4 @@
 	url = https://github.com/sogolmalek/trin
 [submodule "zkevm-circuits"]
 	path = zkevm-circuits
-	url = https://github.com/privacy-scaling-explorations/zkevm-circuits.git
+	url = https://github.com/Neo-vortex/zkevm-circuits.git
