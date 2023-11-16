@@ -1,0 +1,38 @@
+[workspace]
+members = [
+    "zkevm-circuits",
+    "bus-mapping",
+    "geth-utils",
+    "gadgets",
+    "integration-tests",
+    "circuit-benchmarks",
+    "eth-types",
+    "external-tracer",
+    "mock",
+    "testool",
+    "mpt-witness-generator/rustlib",
+    "light-client-poc"
+]
+
+[patch.crates-io]
+halo2_proofs = { git = "https://github.com/privacy-scaling-explorations/halo2.git", tag = "v2023_04_20" }
+
+# Definition of benchmarks profile to use.
+[profile.bench]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+rpath = false
+lto = "thin"
+incremental = false
+codegen-units = 1
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = true
+overflow-checks = true
+rpath = false
+lto = "thin"
+incremental = true

@@ -1,0 +1,16 @@
+[package]
+name = "mock"
+version = "0.1.0"
+edition = "2021"
+authors = ["The appliedzkp team"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+eth-types = { path = "../eth-types" }
+external-tracer = { path = "../external-tracer" }
+lazy_static = "1.4"
+itertools = "0.10.3"
+ethers-signers = "2.0.7"
+ethers-core = "2.0.7"
+rand_chacha = "0.3"
+rand = "0.8"

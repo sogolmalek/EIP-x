@@ -1,0 +1,116 @@
+[
+    {
+        "start": {
+            "disable_preimage_check": false,
+            "proof_type": "StorageChanged"
+        },
+        "extension_branch": null,
+        "account": null,
+        "storage": null,
+        "mod_extension": null,
+        "values": [
+            "a0dd18f580803b8bd34318683578a96c2d41a1e4a885a53a0a5b5904763aa2ba3d00",
+            "a09977939c8c170fc8935710d874e5b6f5f26a01ea17a47a6f7e94600f7efcf6b400"
+        ],
+        "keccak_data": []
+    },
+    {
+        "start": null,
+        "extension_branch": null,
+        "account": {
+            "address": "0000000000000000000000000000000000000021",
+            "key": "fced34088582b4a78f611c7366195e3e94f9080637f4104bbbd0d07ffb783d49",
+            "list_rlp_bytes": [
+                "f86a",
+                "f86a"
+            ],
+            "value_rlp_bytes": [
+                "b846",
+                "b846"
+            ],
+            "value_list_rlp_bytes": [
+                "f844",
+                "f844"
+            ],
+            "drifted_rlp_bytes": "00",
+            "wrong_rlp_bytes": "f86a",
+            "is_mod_extension": [
+                false,
+                false
+            ]
+        },
+        "storage": null,
+        "mod_extension": null,
+        "values": [
+            "a120fced34088582b4a78f611c7366195e3e94f9080637f4104bbbd0d07ffb783d49",
+            "a120fced34088582b4a78f611c7366195e3e94f9080637f4104bbbd0d07ffb783d49",
+            "80000000000000000000000000000000000000000000000000000000000000000000",
+            "80000000000000000000000000000000000000000000000000000000000000000000",
+            "a056e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b42100",
+            "a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a47000",
+            "80000000000000000000000000000000000000000000000000000000000000000000",
+            "80000000000000000000000000000000000000000000000000000000000000000000",
+            "a0f47dbceeb220bfc6b4bb4fff916d683bef410c874923eba1b5c3bd3a2b6c646200",
+            "a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a47000",
+            "00000000000000000000000000000000000000000000000000000000000000000000",
+            "a120fced34088582b4a78f611c7366195e3e94f9080637f4104bbbd0d07ffb783d49"
+        ],
+        "keccak_data": [
+            "f86aa120fced34088582b4a78f611c7366195e3e94f9080637f4104bbbd0d07ffb783d49b846f8448080a056e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
+            "f86aa120fced34088582b4a78f611c7366195e3e94f9080637f4104bbbd0d07ffb783d49b846f8448080a0f47dbceeb220bfc6b4bb4fff916d683bef410c874923eba1b5c3bd3a2b6c6462a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
+            "0000000000000000000000000000000000000021"
+        ]
+    },
+    {
+        "start": null,
+        "extension_branch": null,
+        "account": null,
+        "storage": {
+            "address": "0000000000000000000000000000000000000000000000000000000000000012",
+            "key": "bb8a6a4669ba250d26cd7a459eca9d215f8307e33aebe50379bc5a3617ec3444",
+            "list_rlp_bytes": [
+                "e3",
+                "e3"
+            ],
+            "value_rlp_bytes": [
+                "00",
+                "11"
+            ],
+            "drifted_rlp_bytes": "00",
+            "wrong_rlp_bytes": "00000000000000000000000000000000000000000000000000000000000000000000",
+            "is_mod_extension": [
+                false,
+                false
+            ]
+        },
+        "mod_extension": null,
+        "values": [
+            "a120bb8a6a4669ba250d26cd7a459eca9d215f8307e33aebe50379bc5a3617ec3444",
+            "00000000000000000000000000000000000000000000000000000000000000000000",
+            "a120bb8a6a4669ba250d26cd7a459eca9d215f8307e33aebe50379bc5a3617ec3444",
+            "00000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "keccak_data": [
+            "e3a120bb8a6a4669ba250d26cd7a459eca9d215f8307e33aebe50379bc5a3617ec344411",
+            "e3a120bb8a6a4669ba250d26cd7a459eca9d215f8307e33aebe50379bc5a3617ec344411",
+            "0000000000000000000000000000000000000000000000000000000000000012"
+        ]
+    },
+    {
+        "start": {
+            "disable_preimage_check": false,
+            "proof_type": "Disabled"
+        },
+        "extension_branch": null,
+        "account": null,
+        "storage": null,
+        "mod_extension": null,
+        "values": [
+            "a0000000000000000000000000000000000000000000000000000000000000000000",
+            "a0000000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "keccak_data": []
+    }
+]

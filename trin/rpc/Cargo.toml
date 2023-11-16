@@ -1,0 +1,32 @@
+[package]
+name = "rpc"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/ethereum/trin/tree/master/rpc"
+license = "GPL-3.0"
+readme = "README.md"
+keywords = ["ethereum", "portal-network"]
+categories = ["cryptography::cryptocurrencies"]
+description = "Implemenations of jsonrpsee server API traits for Trin and server interface"
+authors = ["https://github.com/ethereum/trin/graphs/contributors"]
+
+[dependencies]
+anyhow = "1.0.68"
+discv5 = { git = "https://github.com/njgheorghita/discv5.git",  rev = "700bdb97afd87016222e902f844bb95eb0d78d99", features = ["serde"] }
+ethportal-api = { path = "../ethportal-api"}
+ethereum-types = "0.14.1"
+portalnet = { path = "../portalnet"}
+tracing = "0.1.27"
+trin-utils = { path = "../trin-utils"}
+tokio = { version = "1.14.0", features = ["full"] }
+hyper = "0.14"
+reth-ipc = { tag = "v0.1.0-alpha.10", git = "https://github.com/paradigmxyz/reth.git"}
+reth-rpc-types = { tag = "v0.1.0-alpha.10", git = "https://github.com/paradigmxyz/reth.git"}
+url = "2.3.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.95"
+strum = { version = "0.24.1", features = ["derive"] }
+tower-http = { version = "0.4", features = ["full"] }
+tower = { version = "0.4", features = ["full"] }
+trin-validation = { path="../trin-validation" }
+thiserror = "1.0"

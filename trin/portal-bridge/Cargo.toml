@@ -1,0 +1,43 @@
+[package]
+name = "portal-bridge"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/ethereum/trin/tree/main/portal-bridge"
+license = "GPL-3.0"
+readme = "README.md"
+keywords = ["ethereum", "portal-network"]
+categories = ["cryptography::cryptocurrencies"]
+description = "Bridge node for the Portal Network"
+authors = ["https://github.com/ethereum/trin/graphs/contributors"]
+
+
+[dependencies]
+anyhow = "1.0.68"
+async-trait = "0.1.68"
+chrono = "0.4.26"
+clap = { version = "4.2.1", features = ["derive"] }
+discv5 = { git = "https://github.com/njgheorghita/discv5.git", rev = "700bdb97afd87016222e902f844bb95eb0d78d99", features = ["serde"] }
+ethportal-api = { path = "../ethportal-api" }
+ethereum-types = "0.14.1"
+ethereum_ssz = "0.5.3"
+ethereum_ssz_derive = "0.5.3"
+futures = "0.3.21"
+jsonrpsee = {version="0.20.0", features = ["async-client", "client", "macros", "server"]}
+lazy_static = "1.4.0"
+portalnet = { path = "../portalnet" }
+serde = { version = "1.0.150", features = ["derive", "rc"] }
+serde_json = "1.0.89"
+serde_yaml = "0.9"
+ssz_types = "0.5.4"
+surf = "2.3.2"
+tokio = { version = "1.14.0", features = ["full"] }
+tracing = "0.1.36"
+tracing-subscriber = "0.3.15"
+trin-utils = { path = "../trin-utils" }
+trin-validation = { path = "../trin-validation" }
+url = "2.3.1"
+
+[dev-dependencies]
+env_logger = "0.9.0"
+rstest = "0.18.2"
+test-log = { version = "0.2.11", features = ["trace"] }

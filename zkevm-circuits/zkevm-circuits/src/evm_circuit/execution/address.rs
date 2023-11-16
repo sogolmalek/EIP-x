@@ -1,0 +1,147 @@
+use crate::{
+    evm_circuit::{
+        execution::ExecutionGadget,
+        step::ExecutionState,
+        util::{
+            common_gadget::SameContextGadget,
+            constraint_builder::{EVMConstraintBuilder, StepStateTransition, Transition::Delta},
+            CachedRegion,
+        },
+        witness::{Block, Call, ExecStep, Transaction},
+    },
+    table::CallContextFieldTag,
+    util::{
+        word::{WordCell, WordExpr},
+        Expr,
+    },
+};
+use bus_mapping::evm::OpcodeId;
+use eth_types::{Field, ToAddress};
+use halo2_proofs::plonk::Error;
+
+#[derive(Clone, Debug)]
+pub(crate) struct AddressGadget<F> {
+    same_context: SameContextGadget<F>,
+    address: WordCell<F>,
+}
+
+impl<F: Field> ExecutionGadget<F> for AddressGadget<F> {
+    const NAME: &'static str = "ADDRESS";
+
+    const EXECUTION_STATE: ExecutionState = ExecutionState::ADDRESS;
+
+    fn configure(cb: &mut EVMConstraintBuilder<F>) -> Self {
+        let address = cb.query_word_unchecked();
+
+        // Lookup callee address in call context.
+        cb.call_context_lookup_read(None, CallContextFieldTag::CalleeAddress, address.to_word());
+
+        cb.stack_push(address.to_word());
+
+        let step_state_transition = StepStateTransition {
+            rw_counter: Delta(2.expr()),
+            program_counter: Delta(1.expr()),
+            stack_pointer: Delta((-1).expr()),
+            gas_left: Delta(-OpcodeId::ADDRESS.constant_gas_cost().expr()),
+            ..Default::default()
+        };
+
+        let opcode = cb.query_cell();
+        let same_context = SameContextGadget::construct(cb, opcode, step_state_transition);
+
+        Self {
+            same_context,
+            address,
+        }
+    }
+
+    fn assign_exec_step(
+        &self,
+        region: &mut CachedRegion<'_, '_, F>,
+        offset: usize,
+        block: &Block<F>,
+        _: &Transaction,
+        call: &Call,
+        step: &ExecStep,
+    ) -> Result<(), Error> {
+        self.same_context.assign_exec_step(region, offset, step)?;
+
+        let address = block.get_rws(step, 1).stack_value();
+        debug_assert_eq!(call.address, address.to_address());
+
+        self.address
+            .assign_h160(region, offset, address.to_address())?;
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::{evm_circuit::test::rand_bytes, test_util::CircuitTestBuilder};
+    use eth_types::{bytecode, Word};
+    use mock::{generate_mock_call_bytecode, test_ctx::TestContext, MockCallBytecodeParams};
+
+    fn test_root_ok() {
+        let bytecode = bytecode! {
+            ADDRESS
+            STOP
+        };
+
+        CircuitTestBuilder::new_from_test_ctx(
+            TestContext::<2, 1>::simple_ctx_with_bytecode(bytecode).unwrap(),
+        )
+        .run();
+    }
+
+    fn test_internal_ok(call_data_offset: usize, call_data_length: usize) {
+        let (addr_a, addr_b) = (mock::MOCK_ACCOUNTS[0], mock::MOCK_ACCOUNTS[1]);
+
+        // code B gets called by code A, so the call is an internal call.
+        let code_b = bytecode! {
+            ADDRESS
+            STOP
+        };
+
+        // code A calls code B.
+        let pushdata = rand_bytes(8);
+        let code_a = generate_mock_call_bytecode(MockCallBytecodeParams {
+            address: addr_b,
+            pushdata,
+            call_data_length,
+            call_data_offset,
+            ..MockCallBytecodeParams::default()
+        });
+
+        let ctx = TestContext::<3, 1>::new(
+            None,
+            |accs| {
+                accs[0].address(addr_b).code(code_b);
+                accs[1].address(addr_a).code(code_a);
+                accs[2]
+                    .address(mock::MOCK_ACCOUNTS[2])
+                    .balance(Word::from(1u64 << 30));
+            },
+            |mut txs, accs| {
+                txs[0].to(accs[1].address).from(accs[2].address);
+            },
+            |block, _tx| block,
+        )
+        .unwrap();
+
+        CircuitTestBuilder::new_from_test_ctx(ctx).run();
+    }
+
+    #[test]
+    fn address_gadget_root() {
+        test_root_ok();
+    }
+
+    #[test]
+    fn address_gadget_internal() {
+        test_internal_ok(0x20, 0x00);
+        test_internal_ok(0x20, 0x10);
+        test_internal_ok(0x40, 0x20);
+        test_internal_ok(0x1010, 0xff);
+    }
+}
