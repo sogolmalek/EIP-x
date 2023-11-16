@@ -1,0 +1,97 @@
+[[suite]]
+id="default"
+path="tests/src/GeneralStateTestsFiller/VMTests/vmArithmeticTest/addFiller.yml"
+max_gas = 0
+max_steps = 1000000
+
+[[suite]]
+id="nightly"
+path="tests/src/GeneralStateTestsFiller/**/*"
+max_gas = 0
+max_steps = 100000
+
+[[skip_paths]]
+desc = "unimplemented"
+paths = [
+    "EIP1559",
+    "EIP2930",
+    "stPreCompiledContracts",
+    "stZeroKnowledge",
+    "DelegatecallToPrecompile",
+    "RevertPrecompiledTouchExactOOG",
+    "StaticcallToPrecompileFrom",
+    "create_callprecompile_returndatasize_d0_g0_v0",
+    "extCodeHashPrecompiles",
+]
+
+[[skip_paths]]
+desc = "too big"
+paths = [
+    "stTimeConsuming",
+    "stExample",
+    "stQuadraticComplexityTest",
+    "50000"
+]
+
+[[skip_paths]]
+desc = "defines asm"
+paths = [ 
+    "stackLimitGas_1023Filler.json",
+    "stackLimitGas_1024Filler.json",
+    "stackLimitGas_1025Filler.json",
+    "stackLimitPush31_1023Filler.json",
+    "stackLimitPush31_1024Filler.json",
+    "stackLimitPush31_1025Filler.json",
+    "stackLimitPush32_1023Filler.json",
+    "stackLimitPush32_1024Filler.json",
+    "stackLimitPush32_1025Filler.json",
+    "sloadGasCostFiller.json",
+    "selfBalanceCallTypesFiller.json",
+    "selfBalanceGasCostFiller.json",
+    "selfBalanceUpdateFiller.json",
+    "chainIdGasCostFiller.json"
+]
+
+[[skip_paths]]
+desc = "bad json"
+paths = [
+    "Opcodes_TransactionInitFiller",
+    "static_CallContractToCreateContractAndCallItOOGFiller.json", 
+    "dummyFiller.json",
+    "codesizeOOGInvalidSizeFiller.json",
+    "codesizeValidFiller.json",
+    "create2callPrecompilesFiller.json",
+    "callToNonExistentFiller.json",
+    "tackDepthLimitSECFiller.json",
+    "callDataCopyOffsetFiller.json",
+    "calldatacopy_dejavu2Filler.json",
+    "ValueOverflowFiller" # weird 0x:biginteger 0x...
+]
+
+[[skip_paths]]
+desc = "uses :solidity"
+paths = [
+    "RevertRemoteSubCallStorageOOGFiller.yml",
+    "loopMulFiller.yml",
+    "loopExpFiller.yml",
+    "performanceTesterFiller.yml", 
+    "SelfDestructFiller.yml",
+    "RevertRemoteSubCallStorageOOGFiller.yml",
+    "solidityExampleFiller.yml"
+]
+
+[[skip_paths]]
+desc = "todo!"
+paths = [
+    "CreateAddressWarmAfterFailFiller.yml",
+    "result_cancunEnvConvertionFiller.json",
+    "result_mergeEnvConvertionFiller.json",
+    "eoaEmptyFiller.yml"
+]
+
+
+[[skip_paths]]
+desc = "unused"
+paths = [
+     "doubleSelfdestructTestFiller.yml"
+]

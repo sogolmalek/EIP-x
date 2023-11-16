@@ -1,0 +1,54 @@
+# select build image
+FROM rust:1.71.1 AS builder
+
+# create a new empty shell project
+RUN USER=root cargo new --bin trin
+WORKDIR /trin
+
+# Docker build command *SHOULD* include --build-arg GIT_HASH=...
+# eg. --build-arg GIT_HASH=$(git rev-parse HEAD)
+ARG GIT_HASH=unknown
+ENV GIT_HASH=$GIT_HASH
+
+RUN apt-get update && apt-get install clang -y
+
+# copy over manifests and source to build image
+COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.toml ./Cargo.toml
+COPY ./portalnet ./portalnet
+COPY ./light-client ./light-client
+COPY ./src ./src 
+COPY ./trin-beacon ./trin-beacon
+COPY ./portal-bridge ./portal-bridge
+COPY ./trin-history ./trin-history
+COPY ./trin-state ./trin-state 
+COPY ./trin-utils ./trin-utils
+COPY ./trin-validation ./trin-validation
+COPY ./ethportal-peertest ./ethportal-peertest 
+COPY ./utp-testing ./utp-testing
+COPY ./ethportal-api ./ethportal-api
+COPY ./portal-accumulators ./portal-accumulators
+COPY ./rpc ./rpc
+
+# build for release
+RUN cargo build -p trin -p portal-bridge --release
+
+# final base
+FROM ubuntu:22.04
+
+# copy build artifacts from build stage
+COPY --from=builder /trin/target/release/trin /usr/bin/
+COPY --from=builder /trin/target/release/portal-bridge /usr/bin/
+COPY --from=builder /trin/target/release/purge_db /usr/bin/
+# These steps copy over the epoch accumulators repo for the bridge to use
+# This data is too large to be kept inside trin-source code
+# It must be downloaded separately and moved to the correct location
+# https://github.com/njgheorghita/portal-accumulators
+RUN mkdir /portal-accumulators
+COPY --from=builder /trin/portal-accumulators /portal-accumulators
+
+RUN apt-get update && apt-get install libcurl4 -y
+
+ENV RUST_LOG=debug
+
+ENTRYPOINT ["/usr/bin/portal-bridge"]

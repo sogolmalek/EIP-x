@@ -1,0 +1,44 @@
+[package]
+name = "ethportal-peertest"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/ethereum/trin/tree/master/ethportal-peertest"
+license = "GPL-3.0"
+readme = "README.md"
+keywords = ["ethereum", "portal-network"]
+categories = ["cryptography::cryptocurrencies"]
+description = "Testing utilities for trin"
+authors = ["https://github.com/ethereum/trin/graphs/contributors"]
+
+[dependencies]
+anyhow = "1.0.68"
+discv5 = { git = "https://github.com/njgheorghita/discv5.git", rev = "700bdb97afd87016222e902f844bb95eb0d78d99", features = ["serde"] }
+ethereum-types = "0.14.1"
+ethereum_ssz = "0.5.3"
+ethportal-api = { path="../ethportal-api"}
+futures = "0.3.21"
+httpmock = "0.6.6"
+hex = "0.4.3"
+hyper = { version = "0.14", features = ["full"] }
+jsonrpsee = {version="0.20.0", features = ["async-client", "client", "macros", "server"]}
+rand = "0.8.4"
+reth-ipc = { tag = "v0.1.0-alpha.10", git = "https://github.com/paradigmxyz/reth.git"}
+rocksdb = "0.21.0"
+rpc = { path = "../rpc" }
+serde_json = "1.0.89"
+serde_yaml = "0.9.25"
+tempfile = "3.3.0"
+tokio = {version = "1.14.0", features = ["full"]}
+tracing = "0.1.36"
+tracing-subscriber = "0.3.15"
+tree_hash = "0.5.2"
+trin = { path = ".." }
+portal-bridge = { path = "../portal-bridge" }
+trin-history = { path = "../trin-history" }
+trin-state = { path = "../trin-state" }
+trin-utils = { path = "../trin-utils" }
+trin-validation = { path = "../trin-validation" }
+ureq = { version = "2.5.0", features = ["json"] }
+
+[target.'cfg(windows)'.dependencies]
+uds_windows = "1.0.1"

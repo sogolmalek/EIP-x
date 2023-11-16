@@ -1,0 +1,67 @@
+[package]
+name = "trin"
+version = "0.1.0"
+authors = ["https://github.com/ethereum/trin/graphs/contributors"]
+edition = "2021"
+rust-version = "1.71.1"
+default-run = "trin"
+repository = "https://github.com/ethereum/trin"
+license = "GPL-3.0"
+readme = "README.md"
+keywords = ["ethereum", "portal-network"]
+categories = ["cryptography::cryptocurrencies"]
+description = "A Rust implementation of the Ethereum Portal Network"
+
+[dependencies]
+anyhow = "1.0.68"
+clap = { version = "4.2.1", features = ["derive"] }
+discv5 = { git = "https://github.com/njgheorghita/discv5.git", rev = "700bdb97afd87016222e902f844bb95eb0d78d99", features = ["serde"] }
+ethereum-types = "0.14.1"
+ethereum_ssz = "0.5.3"
+ethportal-api = { path = "ethportal-api" }
+jsonrpsee = "0.20.0"
+lazy_static = "1.4.0"
+parking_lot = "0.11.2"
+portalnet = { path = "portalnet" }
+prometheus_exporter = "0.8.4"
+rand = "0.8.4"
+reth-ipc = { tag = "v0.1.0-alpha.10", git = "https://github.com/paradigmxyz/reth.git"}
+rlp = "0.5.0"
+rocksdb = "0.21.0"
+rpc = { path = "rpc"}
+serde_json = {version = "1.0.89", features = ["preserve_order"]}
+sha3 = "0.9.1"
+tempfile = "3.3.0"
+tokio = { version = "1.14.0", features = ["full"] }
+tracing = "0.1.36"
+tracing-subscriber = "0.3.15"
+trin-beacon = { path = "trin-beacon" }
+trin-history = { path = "trin-history" }
+trin-state = { path = "trin-state" }
+trin-utils = { path = "trin-utils" }
+trin-validation = { path = "trin-validation" }
+utp-rs = "0.1.0-alpha.8"
+
+[dev-dependencies]
+ethers-core = { version = "2.0", default-features = false}
+ethers-providers = { version = "2.0", default-features = false, features = ["ipc"] }
+ethportal-peertest = { path = "ethportal-peertest" }
+serde_yaml = "0.9.25"
+serial_test = "0.5.1"
+ureq = { version = "2.5.0", features = ["json"] }
+
+[workspace]
+members = [
+    "ethportal-api",
+    "ethportal-peertest",
+    "light-client",
+    "portal-bridge",
+    "rpc",
+    "trin-beacon",
+    "trin-history",
+    "trin-state",
+    "trin-utils",
+    "trin-validation",
+    "utp-testing",
+    "EIPX/eip",
+]
