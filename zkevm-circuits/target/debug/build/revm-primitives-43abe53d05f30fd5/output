@@ -1,0 +1,1 @@
+cargo:rerun-if-changed=src/kzg/trusted_setup.txt

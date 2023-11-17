@@ -1,0 +1,1 @@
+{"rustc":12635763970412098780,"features":"","target":0,"profile":0,"path":0,"deps":[[5154502561739617271,"build_script_build",false,16155820932687572323]],"local":[{"RerunIfChanged":{"output":"debug/build/revm-primitives-43abe53d05f30fd5/output","paths":["src/kzg/trusted_setup.txt"]}}],"rustflags":[],"metadata":0,"config":0,"compile_kind":0}
