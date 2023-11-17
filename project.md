@@ -1,7 +1,3 @@
-Certainly! Here's a corrected version of the EIP-X proposal README:
-
----
-
 # EIP-X Proposal
 
 Stateless Light Client That Consumes ZKP With Efficient Access To Specific Segments Of The State.
@@ -51,6 +47,7 @@ To mitigate the risk of front running, we introduce time-locked execution. Trade
 
 Acknowledging that ZKP generation may take time, we implement batch processing and explore parallelization techniques to optimize the efficiency of ZKP generation, ensuring scalability and speed.
 
+---
 ## Collaborators
 
 - Sogol Malek
