@@ -66,7 +66,7 @@ Acknowledging that ZKP generation may take time, we implement batch processing a
 -Cc: Hasu, Strategic lead @Flashbots
 
 ## Powerpoint Link: 
-https://docs.google.com/presentation/d/1s2YbWEqGq7IINof2ILLk9UOUFcuYgmH-IXrCJHhLaOw/edit?usp=drive_link
+(https://docs.google.com/presentation/d/1H-ZUW5vUM5Tm30q5tEC_ZOdJg2cqSVp19bHOzN2LzFE/edit?usp=sharing)
 
 ## Github:
 https://github.com/sogolmalek/EIP-x.git 
