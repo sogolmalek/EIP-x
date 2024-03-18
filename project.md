@@ -44,7 +44,7 @@ This EIP is open for discussion and feedback from the Ethereum core developer co
 - Sina Mahmoudi (Geth Team)
 - Portal Team
 - Daniel Marcez (protocol eng @Flashbots)
-- Cc: Hasu, Strategic lead @Flashbots
+
 
 ## PowerPoint Link
 
